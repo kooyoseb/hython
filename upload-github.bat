@@ -63,13 +63,36 @@ if errorlevel 1 (
     goto failed
 )
 
+git ls-remote --exit-code --heads origin main >nul 2>nul
+if not errorlevel 1 (
+    echo [INFO] Synchronizing the existing remote main branch...
+    git fetch origin main
+    if errorlevel 1 goto failed
+
+    git merge-base --is-ancestor origin/main HEAD >nul 2>nul
+    if errorlevel 1 (
+        git merge-base HEAD origin/main >nul 2>nul
+        if errorlevel 1 (
+            echo [INFO] Merging an unrelated GitHub initial commit...
+            git merge origin/main --allow-unrelated-histories -X ours -m "Merge GitHub initial commit"
+            if errorlevel 1 goto failed
+        ) else (
+            echo [INFO] Rebasing local changes onto origin/main...
+            git rebase origin/main
+            if errorlevel 1 (
+                echo [ERROR] Rebase conflict detected.
+                echo Resolve the files, run "git rebase --continue", and retry.
+                goto failed
+            )
+        )
+    )
+)
+
 echo [6/6] Pushing to the GitHub main branch...
 git push -u origin main
 if errorlevel 1 (
     echo.
-    echo If the remote already contains a commit, run:
-    echo   git pull --rebase origin main
-    echo Then run upload-github.bat again.
+    echo Check the error above, then run upload-github.bat again.
     goto failed
 )
 
