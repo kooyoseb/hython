@@ -1,0 +1,26 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="Hython Programming Language" Manufacturer="Hython contributors"
+           Version="$(MsiVersion)" UpgradeCode="{18C655B5-BC7D-4C88-80B3-7F4802E8E5FA}"
+           Scope="perMachine" Compressed="yes">
+    <MajorUpgrade DowngradeErrorMessage="A newer Hython version is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Hython">
+        <Component Id="HythonExecutable" Guid="*">
+          <File Id="HythonExe" Source="$(HythonExe)" KeyPath="yes">
+            <Shortcut Id="HythonStartMenu" Directory="ProgramMenuFolder" Name="Hython Command Prompt"
+                      Description="Open the Hython programming language" Arguments="repl"
+                      WorkingDirectory="INSTALLFOLDER" Advertise="yes" />
+          </File>
+          <Environment Id="HythonPath" Name="PATH" Value="[INSTALLFOLDER]" Action="set"
+                       Part="last" System="yes" Permanent="no" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="MainFeature" Title="Hython" Level="1">
+      <ComponentRef Id="HythonExecutable" />
+    </Feature>
+  </Package>
+</Wix>
