@@ -14,7 +14,7 @@
   <module name="__main__" kind="PythonMainModule" usage="root_module" reason="Root module" source_path="${cwd}\scripts\hython_frozen_launcher.py">
     <optimization-time pass="1" time="0.0000" micro_passes="4" />
     <optimization-time pass="2" time="0.0156" micro_passes="1" />
-    <code-generation-time time="0.0938" />
+    <code-generation-time time="0.0469" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="1112744" />
@@ -346,9 +346,9 @@
     </module_usages>
   </module>
   <module name="__parents_main__" kind="CompiledPythonModule" usage="plugins" reason="Auto enable multiprocessing/anyio freeze support" source_path="${cwd}\scripts\hython_frozen_launcher.py">
-    <optimization-time pass="1" time="0.0156" micro_passes="4" max_branch_merge="8" merged_total="113" />
+    <optimization-time pass="1" time="0.0000" micro_passes="4" max_branch_merge="8" merged_total="113" />
     <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="6" merged_total="28" />
-    <code-generation-time time="0.0156" />
+    <code-generation-time time="0.0000" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="955551" />
@@ -366,7 +366,7 @@
     </module_usages>
   </module>
   <module name="__parents_main__-preLoad" kind="CompiledPythonModule" usage="plugins" reason="Scrubbing multiprocessing fork arguments from sys.argv." source_path="${cwd}\scripts\__parents_main__-preLoad.py">
-    <optimization-time pass="1" time="0.0000" micro_passes="3" max_branch_merge="2" merged_total="9" />
+    <optimization-time pass="1" time="0.0156" micro_passes="3" max_branch_merge="2" merged_total="9" />
     <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="2" merged_total="2" />
     <code-generation-time time="0.0000" />
     <c-compilation-resources>
@@ -531,7 +531,7 @@
     </module_usages>
   </module>
   <module name="_overlapped" kind="PythonExtensionModule" usage="import" reason="Extension module needed for standalone mode." source_path="${sys.prefix}\DLLs\_overlapped.pyd">
-    <optimization-time pass="1" time="0.0000" />
+    <optimization-time pass="1" time="0.0156" />
     <optimization-time pass="2" time="0.0000" />
     <module_usages />
   </module>
@@ -1271,7 +1271,7 @@
   </module>
   <module name="asyncio.log" kind="UncompiledPythonModule" usage="import" reason="Instructed by user to follow to all modules." source_path="${sys.prefix}\Lib\asyncio\log.py">
     <optimization-time pass="1" time="0.0000" micro_passes="4" />
-    <optimization-time pass="2" time="0.0156" />
+    <optimization-time pass="2" time="0.0000" />
     <module_usages>
       <module_usage name="logging" finding="absolute" line="3" />
     </module_usages>
@@ -3580,11 +3580,11 @@
     </module_usages>
   </module>
   <module name="hython" kind="CompiledPythonPackage" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\__init__.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0156" micro_passes="2" max_branch_merge="4" merged_total="8" />
+    <optimization-time pass="1" time="0.0000" micro_passes="2" max_branch_merge="4" merged_total="8" />
     <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="4" merged_total="4" />
     <code-generation-time time="0.0156" />
     <c-compilation-resources>
-      <c-cache tech="clcache" result="cache hit" />
+      <c-cache tech="clcache" result="cache miss" />
       <object-file size="898290" />
     </c-compilation-resources>
     <module_usages>
@@ -3607,9 +3607,9 @@
     </module_usages>
   </module>
   <module name="hython.bytecode" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\bytecode.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.5156" micro_passes="5" max_branch_merge="72" merged_total="4368" />
-    <optimization-time pass="2" time="0.0469" micro_passes="1" max_branch_merge="72" merged_total="870" />
-    <code-generation-time time="0.1562" />
+    <optimization-time pass="1" time="0.3125" micro_passes="5" max_branch_merge="72" merged_total="4368" />
+    <optimization-time pass="2" time="0.0312" micro_passes="1" max_branch_merge="72" merged_total="870" />
+    <code-generation-time time="0.1250" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="2765616" />
@@ -3626,9 +3626,9 @@
     </module_usages>
   </module>
   <module name="hython.cli" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\cli.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.2344" micro_passes="5" max_branch_merge="105" merged_total="2114" />
-    <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="93" merged_total="419" />
-    <code-generation-time time="0.1094" />
+    <optimization-time pass="1" time="0.2188" micro_passes="5" max_branch_merge="105" merged_total="2114" />
+    <optimization-time pass="2" time="0.0312" micro_passes="1" max_branch_merge="93" merged_total="419" />
+    <code-generation-time time="0.0781" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="2240063" />
@@ -3669,9 +3669,9 @@
     </module_usages>
   </module>
   <module name="hython.compiler" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\compiler.py" distribution="hython-lang">
-    <optimization-time pass="1" time="1.0625" micro_passes="5" max_branch_merge="226" merged_total="13740" />
-    <optimization-time pass="2" time="0.1875" micro_passes="1" max_branch_merge="224" merged_total="2751" />
-    <code-generation-time time="0.4375" />
+    <optimization-time pass="1" time="0.9688" micro_passes="5" max_branch_merge="226" merged_total="13740" />
+    <optimization-time pass="2" time="0.1250" micro_passes="1" max_branch_merge="224" merged_total="2751" />
+    <code-generation-time time="0.3750" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="6251608" />
@@ -3688,7 +3688,7 @@
     </module_usages>
   </module>
   <module name="hython.compiler_manager" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\compiler_manager.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.1406" micro_passes="5" max_branch_merge="16" merged_total="1893" />
+    <optimization-time pass="1" time="0.0938" micro_passes="5" max_branch_merge="16" merged_total="1893" />
     <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="16" merged_total="378" />
     <code-generation-time time="0.0469" />
     <c-compilation-resources>
@@ -3716,7 +3716,7 @@
     </module_usages>
   </module>
   <module name="hython.diagnostics" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\diagnostics.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0469" micro_passes="4" max_branch_merge="22" merged_total="748" />
+    <optimization-time pass="1" time="0.0312" micro_passes="4" max_branch_merge="22" merged_total="748" />
     <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="18" merged_total="185" />
     <code-generation-time time="0.0156" />
     <c-compilation-resources>
@@ -3747,9 +3747,9 @@
     </module_usages>
   </module>
   <module name="hython.exe_builder" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\exe_builder.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.2500" micro_passes="5" max_branch_merge="24" merged_total="2541" />
-    <optimization-time pass="2" time="0.0469" micro_passes="1" max_branch_merge="23" merged_total="510" />
-    <code-generation-time time="0.0938" />
+    <optimization-time pass="1" time="0.1250" micro_passes="5" max_branch_merge="24" merged_total="2541" />
+    <optimization-time pass="2" time="0.0312" micro_passes="1" max_branch_merge="23" merged_total="510" />
+    <code-generation-time time="0.0625" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="1990368" />
@@ -3773,9 +3773,9 @@
     </module_usages>
   </module>
   <module name="hython.frontend" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\frontend.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.8281" micro_passes="7" max_branch_merge="249" merged_total="11570" />
-    <optimization-time pass="2" time="0.1250" micro_passes="1" max_branch_merge="237" merged_total="1645" />
-    <code-generation-time time="0.2344" />
+    <optimization-time pass="1" time="0.6406" micro_passes="7" max_branch_merge="249" merged_total="11570" />
+    <optimization-time pass="2" time="0.0781" micro_passes="1" max_branch_merge="237" merged_total="1645" />
+    <code-generation-time time="0.2656" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="4562451" />
@@ -3796,7 +3796,7 @@
   <module name="hython.hir" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\hir.py" distribution="hython-lang">
     <optimization-time pass="1" time="0.0469" micro_passes="4" max_branch_merge="31" merged_total="883" />
     <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="31" merged_total="220" />
-    <code-generation-time time="0.0312" />
+    <code-generation-time time="0.0156" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="1294884" />
@@ -3808,9 +3808,9 @@
     </module_usages>
   </module>
   <module name="hython.importer" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\importer.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0312" micro_passes="4" max_branch_merge="13" merged_total="458" />
-    <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="12" merged_total="108" />
-    <code-generation-time time="0.0156" />
+    <optimization-time pass="1" time="0.0156" micro_passes="4" max_branch_merge="13" merged_total="458" />
+    <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="12" merged_total="108" />
+    <code-generation-time time="0.0312" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="1098198" />
@@ -3826,9 +3826,9 @@
     </module_usages>
   </module>
   <module name="hython.package_manager" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\package_manager.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.1875" micro_passes="5" max_branch_merge="21" merged_total="2463" />
-    <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="19" merged_total="496" />
-    <code-generation-time time="0.0938" />
+    <optimization-time pass="1" time="0.1562" micro_passes="5" max_branch_merge="21" merged_total="2463" />
+    <optimization-time pass="2" time="0.0312" micro_passes="1" max_branch_merge="19" merged_total="496" />
+    <code-generation-time time="0.0625" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="1884613" />
@@ -3862,9 +3862,9 @@
     </module_usages>
   </module>
   <module name="hython.phonetics" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\phonetics.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0312" micro_passes="5" max_branch_merge="8" merged_total="182" />
-    <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="8" merged_total="37" />
-    <code-generation-time time="0.0156" />
+    <optimization-time pass="1" time="0.0000" micro_passes="5" max_branch_merge="8" merged_total="182" />
+    <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="8" merged_total="37" />
+    <code-generation-time time="0.0000" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="974450" />
@@ -3875,7 +3875,7 @@
     </module_usages>
   </module>
   <module name="hython.runtime" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\runtime.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0469" micro_passes="4" max_branch_merge="11" merged_total="518" />
+    <optimization-time pass="1" time="0.0312" micro_passes="4" max_branch_merge="11" merged_total="518" />
     <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="7" merged_total="128" />
     <code-generation-time time="0.0312" />
     <c-compilation-resources>
@@ -3902,9 +3902,9 @@
     </module_usages>
   </module>
   <module name="hython.runtime_manager" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\runtime_manager.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0469" micro_passes="5" max_branch_merge="10" merged_total="558" />
-    <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="9" merged_total="108" />
-    <code-generation-time time="0.0312" />
+    <optimization-time pass="1" time="0.0312" micro_passes="5" max_branch_merge="10" merged_total="558" />
+    <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="9" merged_total="108" />
+    <code-generation-time time="0.0156" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="1158781" />
@@ -3920,9 +3920,9 @@
     </module_usages>
   </module>
   <module name="hython.translator" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\translator.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0938" micro_passes="5" max_branch_merge="23" merged_total="1941" />
-    <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="22" merged_total="386" />
-    <code-generation-time time="0.0312" />
+    <optimization-time pass="1" time="0.0781" micro_passes="5" max_branch_merge="23" merged_total="1941" />
+    <optimization-time pass="2" time="0.0312" micro_passes="1" max_branch_merge="22" merged_total="386" />
+    <code-generation-time time="0.0156" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="1684373" />
@@ -3950,9 +3950,9 @@
     </module_usages>
   </module>
   <module name="hython.updater" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\updater.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0625" micro_passes="3" max_branch_merge="10" merged_total="227" />
-    <optimization-time pass="2" time="0.0156" micro_passes="1" max_branch_merge="6" merged_total="72" />
-    <code-generation-time time="0.0312" />
+    <optimization-time pass="1" time="0.0469" micro_passes="3" max_branch_merge="10" merged_total="227" />
+    <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="6" merged_total="72" />
+    <code-generation-time time="0.0156" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="1118016" />
@@ -3972,8 +3972,8 @@
   </module>
   <module name="hython.vm" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\vm.py" distribution="hython-lang">
     <optimization-time pass="1" time="3.1719" micro_passes="5" max_branch_merge="280" merged_total="29486" />
-    <optimization-time pass="2" time="0.4688" micro_passes="1" max_branch_merge="261" merged_total="5782" />
-    <code-generation-time time="0.8438" />
+    <optimization-time pass="2" time="0.4219" micro_passes="1" max_branch_merge="261" merged_total="5782" />
+    <code-generation-time time="0.7344" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="12941230" />
@@ -3999,9 +3999,9 @@
     </module_usages>
   </module>
   <module name="hython.vocabulary" kind="CompiledPythonModule" usage="root_module" reason="Root module" source_path="${cwd}\src\hython\vocabulary.py" distribution="hython-lang">
-    <optimization-time pass="1" time="0.0312" micro_passes="4" max_branch_merge="4" merged_total="92" />
+    <optimization-time pass="1" time="0.0156" micro_passes="4" max_branch_merge="4" merged_total="92" />
     <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="4" merged_total="23" />
-    <code-generation-time time="0.0000" />
+    <code-generation-time time="0.0156" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="949591" />
@@ -4453,7 +4453,7 @@
   </module>
   <module name="logging" kind="UncompiledPythonPackage" usage="import" reason="Instructed by user to follow to all modules." source_path="${sys.prefix}\Lib\logging\__init__.py">
     <optimization-time pass="1" time="0.6875" micro_passes="5" max_branch_merge="34" merged_total="8556" />
-    <optimization-time pass="2" time="0.0000" />
+    <optimization-time pass="2" time="0.0156" />
     <module_usages>
       <module_usage name="os" finding="absolute" line="1" />
       <module_usage name="sys" finding="absolute" line="26" />
@@ -4537,9 +4537,9 @@
     </module_usages>
   </module>
   <module name="multiprocessing-postLoad" kind="CompiledPythonModule" usage="plugins" reason="Monkey patching &quot;multiprocessing&quot; for compiled methods." source_path="${sys.prefix}\Lib\multiprocessing\multiprocessing-postLoad.py">
-    <optimization-time pass="1" time="0.0000" micro_passes="4" max_branch_merge="5" merged_total="89" />
+    <optimization-time pass="1" time="0.0156" micro_passes="4" max_branch_merge="5" merged_total="89" />
     <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="3" merged_total="18" />
-    <code-generation-time time="0.0156" />
+    <code-generation-time time="0.0000" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="945613" />
@@ -4554,9 +4554,9 @@
     </module_usages>
   </module>
   <module name="multiprocessing-preLoad" kind="CompiledPythonModule" usage="plugins" reason="Monkey patching &quot;multiprocessing&quot; load environment." source_path="${sys.prefix}\Lib\multiprocessing\multiprocessing-preLoad.py">
-    <optimization-time pass="1" time="0.0156" micro_passes="3" max_branch_merge="2" merged_total="8" />
+    <optimization-time pass="1" time="0.0000" micro_passes="3" max_branch_merge="2" merged_total="8" />
     <optimization-time pass="2" time="0.0000" micro_passes="1" max_branch_merge="2" merged_total="2" />
-    <code-generation-time time="0.0000" />
+    <code-generation-time time="0.0156" />
     <c-compilation-resources>
       <c-cache tech="clcache" result="cache hit" />
       <object-file size="891088" />
@@ -4741,7 +4741,7 @@
   </module>
   <module name="multiprocessing.pool" kind="UncompiledPythonModule" usage="import" reason="Multiprocessing plugin needs this to monkey patch it." source_path="${sys.prefix}\Lib\multiprocessing\pool.py">
     <optimization-time pass="1" time="0.2500" micro_passes="6" max_branch_merge="43" merged_total="5611" />
-    <optimization-time pass="2" time="0.0156" />
+    <optimization-time pass="2" time="0.0000" />
     <module_usages>
       <module_usage name="collections" finding="absolute" line="16" />
       <module_usage name="itertools" finding="absolute" line="17" />
@@ -4824,7 +4824,7 @@
   </module>
   <module name="multiprocessing.reduction" kind="UncompiledPythonModule" usage="import fromlist" reason="Multiprocessing plugin needs this to monkey patch it." source_path="${sys.prefix}\Lib\multiprocessing\reduction.py">
     <optimization-time pass="1" time="0.0625" micro_passes="5" max_branch_merge="19" merged_total="831" />
-    <optimization-time pass="2" time="0.0000" />
+    <optimization-time pass="2" time="0.0156" />
     <module_usages>
       <module_usage name="abc" finding="absolute" line="10" />
       <module_usage name="copyreg" finding="absolute" line="11" />
@@ -5127,7 +5127,7 @@
   </module>
   <module name="pathlib._os" kind="UncompiledPythonModule" usage="import" reason="Including as part of the non-excluded parts of standard library." source_path="${sys.prefix}\Lib\pathlib\_os.py">
     <optimization-time pass="1" time="0.1094" micro_passes="5" max_branch_merge="23" merged_total="2631" />
-    <optimization-time pass="2" time="0.0000" />
+    <optimization-time pass="2" time="0.0156" />
     <module_usages>
       <module_usage name="errno" finding="absolute" line="5" />
       <module_usage name="io" finding="absolute" line="6" />
@@ -5491,13 +5491,13 @@
     </module_usages>
   </module>
   <module name="select" kind="PythonExtensionModule" usage="import" reason="Extension module needed for standalone mode." source_path="${sys.prefix}\DLLs\select.pyd">
-    <optimization-time pass="1" time="0.0156" />
+    <optimization-time pass="1" time="0.0000" />
     <optimization-time pass="2" time="0.0000" />
     <module_usages />
   </module>
   <module name="selectors" kind="UncompiledPythonModule" usage="import" reason="Instructed by user to follow to all modules." source_path="${sys.prefix}\Lib\selectors.py">
     <optimization-time pass="1" time="0.1250" micro_passes="4" max_branch_merge="15" merged_total="2609" />
-    <optimization-time pass="2" time="0.0156" />
+    <optimization-time pass="2" time="0.0000" />
     <module_usages>
       <module_usage name="abc" finding="absolute" line="8" />
       <module_usage name="collections" finding="absolute" line="9" />
@@ -6126,7 +6126,7 @@
     </module_usages>
   </module>
   <module name="unicodedata" kind="PythonExtensionModule" usage="import" reason="Including as part of the non-excluded parts of standard library." source_path="${sys.prefix}\DLLs\unicodedata.pyd">
-    <optimization-time pass="1" time="6.2812" />
+    <optimization-time pass="1" time="5.0312" />
     <optimization-time pass="2" time="0.0000" />
     <module_usages />
   </module>
@@ -6370,9 +6370,9 @@
     </module_usages>
   </module>
   <performance>
-    <memory_usage name="after_launch" value="45686784" />
-    <memory_usage name="before_c_code_generation" value="109363200" />
-    <memory_usage name="before_running_scons" value="112590848" />
+    <memory_usage name="after_launch" value="45768704" />
+    <memory_usage name="before_c_code_generation" value="108494848" />
+    <memory_usage name="before_running_scons" value="112340992" />
   </performance>
   <data_file name="hython_source\hython\__init__.py" source="${cwd}\src\hython\__init__.py" size="366" reason="specified data file 'C:\Users\musek\OneDrive\바탕 화면\HAYthon\src\hython\*.py=hython_source/hython/' on command line" tags="user,copy" />
   <data_file name="hython_source\hython\__main__.py" source="${cwd}\src\hython\__main__.py" size="60" reason="specified data file 'C:\Users\musek\OneDrive\바탕 화면\HAYthon\src\hython\*.py=hython_source/hython/' on command line" tags="user,copy" />
@@ -6447,10 +6447,10 @@
     <module_data filename="module.multiprocessing-preLoad.const" blob_name="multiprocessing-preLoad" blob_size="184" input_size="363" />
   </data_composer>
   <performance-totals>
-    <optimization-time pass="1" time="59.7969" module_count="474" />
-    <optimization-time pass="2" time="1.0938" module_count="474" />
-    <optimization-time pass="all" time="60.8906" module_count="474" />
-    <code-generation-time time="2.3594" module_count="25" />
+    <optimization-time pass="1" time="57.6875" module_count="474" />
+    <optimization-time pass="2" time="0.8906" module_count="474" />
+    <optimization-time pass="all" time="58.5781" module_count="474" />
+    <code-generation-time time="1.9844" module_count="25" />
   </performance-totals>
   <python_binary filename="hython_frozen_launcher.dll" backend_resource_mode="coff_obj" reproducible="no" size="12157440" />
   <onefile_binary filename="hython.exe" onefile_resource_mode="coff_obj" reproducible="no" size="8736768" />
@@ -6459,7 +6459,7 @@
     <option value="--standalone" />
     <option value="--assume-yes-for-downloads" />
     <option value="--msvc=latest" />
-    <option value="--output-dir=C:\Users\musek\AppData\Local\Temp\hython-native-build-lwyxvs48" />
+    <option value="--output-dir=C:\Users\musek\AppData\Local\Temp\hython-native-build-6g2a2dn5" />
     <option value="--output-filename=hython.exe" />
     <option value="--include-package=hython" />
     <option value="--include-data-files=C:\Users\musek\OneDrive\바탕 화면\HAYthon\src\hython\*.py=hython_source/hython/" />
@@ -6470,9 +6470,9 @@
     <option value="--file-description=Hython C-compiled compiler and HBC VM" />
     <option value="--company-name=Kooyoseb" />
     <option value="--copyright=MIT License" />
-    <option value="--file-version=2.0.0.0" />
-    <option value="--product-version=2.0.0.0" />
-    <option value="--report=C:\Users\musek\AppData\Local\Temp\hython-native-build-lwyxvs48\nuitka-report.xml" />
+    <option value="--file-version=2.0.1.0" />
+    <option value="--product-version=2.0.1.0" />
+    <option value="--report=C:\Users\musek\AppData\Local\Temp\hython-native-build-6g2a2dn5\nuitka-report.xml" />
     <option value="C:\Users\musek\OneDrive\바탕 화면\HAYthon\scripts\hython_frozen_launcher.py" />
   </command_line>
   <plugins>
@@ -6517,5 +6517,5 @@
       <path value="${sys.prefix}\Lib\site-packages\setuptools\_vendor" />
     </search_path>
   </python>
-  <output run_filename="~\AppData\Local\Temp\hython-native-build-lwyxvs48\hython.exe" />
+  <output run_filename="~\AppData\Local\Temp\hython-native-build-6g2a2dn5\hython.exe" />
 </nuitka-compilation-report>

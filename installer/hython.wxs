@@ -1,4 +1,5 @@
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
   <Package Name="Hython" Manufacturer="Kooyoseb"
            Version="$(MsiVersion)" UpgradeCode="{18C655B5-BC7D-4C88-80B3-7F4802E8E5FA}"
            Scope="perMachine" Compressed="yes">
@@ -6,6 +7,8 @@
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/kooyoseb/hython" />
     <Property Id="ARPHELPLINK" Value="https://github.com/kooyoseb/hython/issues" />
+    <ui:WixUI Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(LicenseRtf)" />
 
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="INSTALLFOLDER" Name="Hython">

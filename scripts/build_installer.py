@@ -37,6 +37,8 @@ def main():
     output=ROOT/"release"/f"Hython-{__version__}-x64.msi"
     command=[wix,"build",str(ROOT/"installer"/"hython.wxs"),"-arch","x64",
              "-d",f"HythonExe={executable.resolve()}","-d",f"MsiVersion={msi_version}",
+             "-d",f"LicenseRtf={(ROOT/'installer'/'license.rtf').resolve()}",
+             "-ext","WixToolset.UI.wixext",
              "-pdbtype","none","-o",str(output)]
     result=subprocess.run(command,cwd=ROOT)
     if result.returncode: raise SystemExit(result.returncode)
