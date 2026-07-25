@@ -38,23 +38,23 @@ $Record = $View.Fetch()
 $ProductCode = $Record.StringData(1)
 $View.Close()
 
-$ManifestDir = Join-Path $Root "winget\manifests\k\Kooyoseb\Hython\$Version"
+$ManifestDir = Join-Path $Root "winget\manifests\k\kooyoseb\Hython\$Version"
 New-Item -ItemType Directory -Path $ManifestDir -Force | Out-Null
 
 @"
 # Created by Hython's Winget preparation script.
 # yaml-language-server: `$schema=https://aka.ms/winget-manifest.version.1.10.0.schema.json
-PackageIdentifier: Kooyoseb.Hython
+PackageIdentifier: kooyoseb.Hython
 PackageVersion: $Version
 DefaultLocale: en-US
 ManifestType: version
 ManifestVersion: 1.10.0
-"@ | Set-Content -LiteralPath (Join-Path $ManifestDir "Kooyoseb.Hython.yaml") -Encoding utf8
+"@ | Set-Content -LiteralPath (Join-Path $ManifestDir "kooyoseb.Hython.yaml") -Encoding utf8
 
 @"
 # Created by Hython's Winget preparation script.
 # yaml-language-server: `$schema=https://aka.ms/winget-manifest.installer.1.10.0.schema.json
-PackageIdentifier: Kooyoseb.Hython
+PackageIdentifier: kooyoseb.Hython
 PackageVersion: $Version
 InstallerType: wix
 Scope: machine
@@ -76,12 +76,12 @@ Installers:
     ProductCode: '$ProductCode'
 ManifestType: installer
 ManifestVersion: 1.10.0
-"@ | Set-Content -LiteralPath (Join-Path $ManifestDir "Kooyoseb.Hython.installer.yaml") -Encoding utf8
+"@ | Set-Content -LiteralPath (Join-Path $ManifestDir "kooyoseb.Hython.installer.yaml") -Encoding utf8
 
 @"
 # Created by Hython's Winget preparation script.
 # yaml-language-server: `$schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
-PackageIdentifier: Kooyoseb.Hython
+PackageIdentifier: kooyoseb.Hython
 PackageVersion: $Version
 PackageLocale: en-US
 Publisher: Kooyoseb
@@ -105,9 +105,9 @@ Tags:
 ReleaseNotesUrl: https://github.com/kooyoseb/hython/releases/tag/v$Version
 ManifestType: defaultLocale
 ManifestVersion: 1.10.0
-"@ | Set-Content -LiteralPath (Join-Path $ManifestDir "Kooyoseb.Hython.locale.en-US.yaml") -Encoding utf8
+"@ | Set-Content -LiteralPath (Join-Path $ManifestDir "kooyoseb.Hython.locale.en-US.yaml") -Encoding utf8
 
-$OldKoreanLocale = Join-Path $ManifestDir "Kooyoseb.Hython.locale.ko-KR.yaml"
+$OldKoreanLocale = Join-Path $ManifestDir "kooyoseb.Hython.locale.ko-KR.yaml"
 if (Test-Path -LiteralPath $OldKoreanLocale) {
     Remove-Item -LiteralPath $OldKoreanLocale -Force
 }
