@@ -18,6 +18,20 @@ def main():
     if not wix: raise SystemExit("WiX가 없습니다: dotnet tool install --global wix")
     executable=ROOT/"release"/"hython.exe"
     if not executable.is_file(): raise SystemExit("먼저 build-hython.bat을 실행하세요.")
+    version_check=subprocess.run(
+        [str(executable), "--version"],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    expected=f"하이썬 {__version__}"
+    actual=(version_check.stdout or version_check.stderr).strip()
+    if version_check.returncode or actual != expected:
+        raise SystemExit(
+            f"EXE 버전이 일치하지 않습니다: {actual or '확인 실패'} "
+            f"(필요: {expected}). build-hython.bat을 다시 실행하세요."
+        )
     match=re.fullmatch(r"(\d+)\.(\d+)\.(\d+)(?:-dev(\d+))?",__version__)
     msi_version=f"{match.group(1)}.{match.group(2)}.{match.group(4) or match.group(3)}" if match else "1.0.0"
     output=ROOT/"release"/f"Hython-{__version__}-x64.msi"

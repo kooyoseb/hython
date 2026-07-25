@@ -63,6 +63,7 @@ def main(argv=None):
     except ImportError: parser.error('Nuitka가 필요합니다: pip install ".[native]"')
     output=ns.output_dir.resolve(); output.mkdir(parents=True,exist_ok=True)
     build_env=msvc_environment(); build_env["PYTHONUTF8"]="1"; build_env["PYTHONIOENCODING"]="utf-8"
+    build_env["PYTHONPATH"]=str(SRC)+os.pathsep+build_env.get("PYTHONPATH","")
     for attempt in range(1,4):
         with tempfile.TemporaryDirectory(prefix="hython-native-build-") as directory:
             work=Path(directory); report=work/"nuitka-report.xml"
@@ -72,7 +73,7 @@ def main(argv=None):
                      "--nofollow-import-to=tkinter,_tkinter","--windows-console-mode=force",
                      "--windows-icon-from-ico="+str(ROOT/"assets"/"hython.ico"),
                      "--product-name=Hython Programming Language","--file-description=Hython C-compiled compiler and HBC VM",
-                     "--company-name=Hython contributors","--copyright=MIT License",
+                     "--company-name=Kooyoseb","--copyright=MIT License",
                      "--file-version="+numeric_version(),"--product-version="+numeric_version(),
                      "--report="+str(report),str(ROOT/"scripts"/"hython_frozen_launcher.py")]
             result=subprocess.run(

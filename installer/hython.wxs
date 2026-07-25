@@ -1,9 +1,11 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Name="Hython Programming Language" Manufacturer="Hython contributors"
+  <Package Name="Hython" Manufacturer="Kooyoseb"
            Version="$(MsiVersion)" UpgradeCode="{18C655B5-BC7D-4C88-80B3-7F4802E8E5FA}"
            Scope="perMachine" Compressed="yes">
     <MajorUpgrade DowngradeErrorMessage="A newer Hython version is already installed." />
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/kooyoseb/hython" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/kooyoseb/hython/issues" />
 
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="INSTALLFOLDER" Name="Hython">

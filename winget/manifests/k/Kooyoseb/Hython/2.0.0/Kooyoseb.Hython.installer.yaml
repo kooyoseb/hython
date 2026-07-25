@@ -1,0 +1,24 @@
+﻿# Created by Hython's Winget preparation script.
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.10.0.schema.json
+PackageIdentifier: Kooyoseb.Hython
+PackageVersion: 2.0.0
+InstallerType: wix
+Scope: machine
+InstallModes:
+- interactive
+- silent
+- silentWithProgress
+UpgradeBehavior: install
+ReleaseDate: 2026-07-25
+Installers:
+- Architecture: x64
+  InstallerUrl: https://github.com/kooyoseb/hython/releases/download/v2.0.0/Hython-2.0.0-x64.msi
+  InstallerSha256: 152309D33AFF894591F132C842FDACCD59688647B69A137EA5F7A2E6C2DFD2A2
+  ProductCode: '{BAAC6386-6B2D-436B-AB82-8298FDCE24E3}'
+  AppsAndFeaturesEntries:
+  - DisplayName: Hython
+    Publisher: Kooyoseb
+    DisplayVersion: 2.0.0
+    ProductCode: '{BAAC6386-6B2D-436B-AB82-8298FDCE24E3}'
+ManifestType: installer
+ManifestVersion: 1.10.0
