@@ -112,6 +112,14 @@ if (Test-Path -LiteralPath $OldKoreanLocale) {
     Remove-Item -LiteralPath $OldKoreanLocale -Force
 }
 
+# The winget-pkgs validation service requires CRLF for every manifest line.
+$Utf8Bom = New-Object System.Text.UTF8Encoding($true)
+Get-ChildItem -LiteralPath $ManifestDir -Filter "*.yaml" -File | ForEach-Object {
+    $Content = [System.IO.File]::ReadAllText($_.FullName)
+    $Content = $Content -replace "`r?`n", "`r`n"
+    [System.IO.File]::WriteAllText($_.FullName, $Content, $Utf8Bom)
+}
+
 Write-Host "Manifest directory: $ManifestDir"
 Write-Host "Installer URL: $InstallerUrl"
 Write-Host "SHA-256: $Hash"
