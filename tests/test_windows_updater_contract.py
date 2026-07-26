@@ -25,6 +25,7 @@ class WindowsUpdaterContractTests(unittest.TestCase):
             self.source,
         )
         self.assertNotRegex(self.source, r"http://")
+        self.assertIn("client.Encoding = Encoding.UTF8", self.source)
 
     def test_download_is_sha256_verified_before_install(self):
         verify_at = self.source.index("SHA256.Create()")

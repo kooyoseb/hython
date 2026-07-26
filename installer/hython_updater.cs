@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -165,6 +166,7 @@ namespace HythonUpdater
         private static WebClient NewClient()
         {
             var client = new WebClient();
+            client.Encoding = Encoding.UTF8;
             client.Headers[HttpRequestHeader.UserAgent] = "Hython-Updater/2.0.4";
             client.Headers[HttpRequestHeader.Accept] = "application/vnd.github+json";
             return client;
