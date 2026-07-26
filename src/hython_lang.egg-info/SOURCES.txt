@@ -20,6 +20,7 @@ scripts/build_hython_native.py
 scripts/build_installer.py
 scripts/build_pypi.py
 scripts/build_setup.py
+scripts/build_updater.py
 scripts/hython_frozen_launcher.py
 scripts/stability.py
 src/hython/__init__.py
@@ -86,4 +87,5 @@ tests/test_stability.py
 tests/test_translator.py
 tests/test_unpacking.py
 tests/test_updater.py
+tests/test_windows_updater_contract.py
 tests/test_with_lambda.py

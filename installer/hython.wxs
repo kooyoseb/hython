@@ -17,6 +17,13 @@
         <Component Id="HythonExecutable" Guid="*">
           <File Id="HythonExe" Source="$(HythonExe)" KeyPath="yes" />
         </Component>
+        <Component Id="HythonUpdaterComponent" Guid="*">
+          <File Id="HythonUpdaterExe" Source="$(HythonUpdaterExe)" KeyPath="yes" />
+          <RegistryValue Root="HKLM"
+                         Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                         Name="Hython Updater" Type="string"
+                         Value="&quot;[INSTALLFOLDER]HythonUpdater.exe&quot;" />
+        </Component>
         <Component Id="HythonPathComponent" Guid="*">
           <Environment Id="HythonPath" Name="PATH" Value="[INSTALLFOLDER]" Action="set"
                        Part="last" System="yes" Permanent="no" />
@@ -51,6 +58,7 @@
     <Feature Id="MainFeature" Title="Hython Programming Language" Level="1"
              AllowAbsent="no" Display="expand">
       <ComponentRef Id="HythonExecutable" />
+      <ComponentRef Id="HythonUpdaterComponent" />
       <Feature Id="PathFeature" Title="Add Hython to the system PATH"
                Description="Run hython from Command Prompt, PowerShell, and Terminal." Level="1">
         <ComponentRef Id="HythonPathComponent" />

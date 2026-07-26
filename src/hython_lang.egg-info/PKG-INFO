@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: hython-lang
-Version: 2.0.3
+Version: 2.0.4
 Summary: Python, pronounced in Hangul
 Author: Hython contributors
 License-Expression: MIT
@@ -57,6 +57,13 @@ hython --version
 Windows에서는 GitHub Release의 `Hython-버전-setup.exe`를 사용할 수 있습니다.
 설치 프로그램은 한국어와 영어를 지원하며 PATH, 시작 메뉴, 바탕화면 바로가기를
 선택적으로 설치합니다. 자동 배포와 Winget에는 x64 MSI를 사용합니다.
+
+Windows 설치본에는 트레이 업데이터가 함께 포함됩니다. 로그인하면 자동 실행되어
+현재 설치 버전과 GitHub 최신 릴리스를 6시간마다 비교하며, 새 x64 MSI의 SHA-256을
+검증한 뒤 관리자 권한으로 자동 설치합니다. 트레이 아이콘을 두 번 누르거나 메뉴의
+`지금 업데이트 확인`을 선택하면 즉시 검사할 수 있습니다.
+`언어 / Language` 메뉴에서는 한국어와 영어를 선택할 수 있으며 선택값은 사용자별로
+저장됩니다.
 
 ## 첫 실행
 

@@ -12,8 +12,8 @@ using Microsoft.Win32;
 [assembly: AssemblyCompany("Kooyoseb")]
 [assembly: AssemblyProduct("Hython Programming Language")]
 [assembly: AssemblyCopyright("MIT License")]
-[assembly: AssemblyVersion("2.0.3.0")]
-[assembly: AssemblyFileVersion("2.0.3.0")]
+[assembly: AssemblyVersion("2.0.4.0")]
+[assembly: AssemblyFileVersion("2.0.4.0")]
 
 namespace HythonSetup
 {
@@ -105,7 +105,7 @@ namespace HythonSetup
             if (Korean)
             {
                 Text = "하이썬 설치";
-                title.Text = installedProductCode == null ? "하이썬 2.0.3 설치" : "하이썬 유지관리";
+                title.Text = installedProductCode == null ? "하이썬 2.0.4 설치" : "하이썬 유지관리";
                 description.Text = installedProductCode == null
                     ? "설치할 기능을 선택한 뒤 설치 버튼을 누르세요."
                     : "설치된 하이썬을 복구하거나 제거할 수 있습니다.";
@@ -123,7 +123,7 @@ namespace HythonSetup
             else
             {
                 Text = "Hython Setup";
-                title.Text = installedProductCode == null ? "Install Hython 2.0.3" : "Hython maintenance";
+                title.Text = installedProductCode == null ? "Install Hython 2.0.4" : "Hython maintenance";
                 description.Text = installedProductCode == null
                     ? "Choose the features to install, then select Install."
                     : "Repair or remove the installed Hython application.";
@@ -153,7 +153,7 @@ namespace HythonSetup
                 return;
             }
             string temporaryMsi = Path.Combine(
-                Path.GetTempPath(), "Hython-2.0.3-" + Guid.NewGuid().ToString("N") + ".msi");
+                Path.GetTempPath(), "Hython-2.0.4-" + Guid.NewGuid().ToString("N") + ".msi");
             try
             {
                 install.Enabled = false;
@@ -189,8 +189,8 @@ namespace HythonSetup
                 if (process.ExitCode == 0 || process.ExitCode == 3010)
                 {
                     MessageBox.Show(
-                        Korean ? "하이썬 2.0.3 설치가 완료되었습니다."
-                               : "Hython 2.0.3 was installed successfully.",
+                        Korean ? "하이썬 2.0.4 설치가 완료되었습니다."
+                               : "Hython 2.0.4 was installed successfully.",
                         Korean ? "설치 완료" : "Installation complete",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Close();
@@ -320,7 +320,7 @@ namespace HythonSetup
                     }
                 }
             }
-            if (newestVersion != null && newestVersion >= new Version(2, 0, 3))
+            if (newestVersion != null && newestVersion >= new Version(2, 0, 4))
             {
                 installedProductCode = newestCode;
                 installedVersion = newestDisplayVersion;
