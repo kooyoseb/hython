@@ -10,12 +10,12 @@ from hython.vocabulary import BUILTINS, KEYWORDS, LIBRARY_NAMES, SPECIAL_NAMES
 
 class ReleaseContractTests(unittest.TestCase):
     def test_public_version(self):
-        self.assertEqual(hython.__version__,"2.0.2")
+        self.assertEqual(hython.__version__,"2.0.3")
 
     def test_stable_release_metadata(self):
         root = Path(__file__).resolve().parents[1]
         project = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))["project"]
-        self.assertEqual(project["version"], "2.0.2")
+        self.assertEqual(project["version"], "2.0.3")
         self.assertIn("Development Status :: 5 - Production/Stable", project["classifiers"])
         self.assertNotIn("Development Status :: 4 - Beta", project["classifiers"])
 
