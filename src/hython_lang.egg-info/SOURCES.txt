@@ -19,6 +19,7 @@ scripts/build_hython_exe.py
 scripts/build_hython_native.py
 scripts/build_installer.py
 scripts/build_pypi.py
+scripts/build_setup.py
 scripts/hython_frozen_launcher.py
 scripts/stability.py
 src/hython/__init__.py

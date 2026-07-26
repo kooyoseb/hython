@@ -7,25 +7,62 @@
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/kooyoseb/hython" />
     <Property Id="ARPHELPLINK" Value="https://github.com/kooyoseb/hython/issues" />
-    <ui:WixUI Id="WixUI_Minimal" />
+    <Icon Id="HythonIcon" SourceFile="$(HythonIcon)" />
+    <Property Id="ARPPRODUCTICON" Value="HythonIcon" />
+    <ui:WixUI Id="WixUI_FeatureTree" />
     <WixVariable Id="WixUILicenseRtf" Value="$(LicenseRtf)" />
 
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="INSTALLFOLDER" Name="Hython">
         <Component Id="HythonExecutable" Guid="*">
-          <File Id="HythonExe" Source="$(HythonExe)" KeyPath="yes">
-            <Shortcut Id="HythonStartMenu" Directory="ProgramMenuFolder" Name="Hython Command Prompt"
-                      Description="Open the Hython programming language" Arguments="repl"
-                      WorkingDirectory="INSTALLFOLDER" Advertise="yes" />
-          </File>
+          <File Id="HythonExe" Source="$(HythonExe)" KeyPath="yes" />
+        </Component>
+        <Component Id="HythonPathComponent" Guid="*">
           <Environment Id="HythonPath" Name="PATH" Value="[INSTALLFOLDER]" Action="set"
                        Part="last" System="yes" Permanent="no" />
+          <RegistryValue Root="HKLM" Key="Software\Kooyoseb\Hython"
+                         Name="PathFeature" Type="integer" Value="1" KeyPath="yes" />
         </Component>
       </Directory>
     </StandardDirectory>
 
-    <Feature Id="MainFeature" Title="Hython" Level="1">
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Component Id="HythonStartMenuComponent" Guid="*">
+        <Shortcut Id="HythonStartMenu" Name="Hython Command Prompt"
+                  Description="Open the Hython programming language"
+                  Target="[INSTALLFOLDER]hython.exe" Arguments="repl"
+                  WorkingDirectory="INSTALLFOLDER" Icon="HythonIcon" />
+        <RegistryValue Root="HKLM" Key="Software\Kooyoseb\Hython"
+                       Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="HythonDesktopComponent" Guid="*">
+        <Shortcut Id="HythonDesktop" Name="Hython Command Prompt"
+                  Description="Open the Hython programming language"
+                  Target="[INSTALLFOLDER]hython.exe" Arguments="repl"
+                  WorkingDirectory="INSTALLFOLDER" Icon="HythonIcon" />
+        <RegistryValue Root="HKLM" Key="Software\Kooyoseb\Hython"
+                       Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <Feature Id="MainFeature" Title="Hython Programming Language" Level="1"
+             AllowAbsent="no" Display="expand">
       <ComponentRef Id="HythonExecutable" />
+      <Feature Id="PathFeature" Title="Add Hython to the system PATH"
+               Description="Run hython from Command Prompt, PowerShell, and Terminal." Level="1">
+        <ComponentRef Id="HythonPathComponent" />
+      </Feature>
+      <Feature Id="StartMenuFeature" Title="Start menu command prompt shortcut"
+               Description="Create a Hython Command Prompt shortcut in the Start menu." Level="1">
+        <ComponentRef Id="HythonStartMenuComponent" />
+      </Feature>
+      <Feature Id="DesktopFeature" Title="Desktop command prompt shortcut"
+               Description="Create a Hython Command Prompt shortcut on the desktop." Level="2">
+        <ComponentRef Id="HythonDesktopComponent" />
+      </Feature>
     </Feature>
   </Package>
 </Wix>

@@ -30,6 +30,10 @@ hython --version
 현재 공개 버전은 [PyPI의 `hython-lang`](https://pypi.org/project/hython-lang/)에서
 설치할 수 있습니다.
 
+Windows에서는 GitHub Release의 `Hython-버전-setup.exe`를 사용할 수 있습니다.
+설치 프로그램은 한국어와 영어를 지원하며 PATH, 시작 메뉴, 바탕화면 바로가기를
+선택적으로 설치합니다. 자동 배포와 Winget에는 x64 MSI를 사용합니다.
+
 ## 첫 실행
 
 `안녕.hy` 파일을 만듭니다.
