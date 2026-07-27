@@ -18,8 +18,20 @@ public partial class App : System.Windows.Application
         }
     }
 
+    public static void UpdateTrayProgress(double progress, string text)
+    {
+        if (Current is not App app || app.tray is null) return;
+        string tooltip = progress > 0 && progress < 100
+            ? $"하이썬 매니저 · {progress:F0}% · {text}" : "하이썬 매니저";
+        app.tray.Text = tooltip.Length > 63 ? tooltip[..63] : tooltip;
+        if (app.trayProgressItem is not null)
+            app.trayProgressItem.Text = progress > 0 && progress < 100
+                ? $"전체 진행률 {progress:F0}% · {text}" : "진행 중인 작업 없음";
+    }
+
     private Mutex? mutex;
     private Forms.NotifyIcon? tray;
+    private Forms.ToolStripMenuItem? trayProgressItem;
     private MainWindow? window;
     private DispatcherTimer? updateTimer;
     private ManagerSettings settings = null!;
@@ -46,6 +58,10 @@ public partial class App : System.Windows.Application
     private void CreateTray()
     {
         var menu = new Forms.ContextMenuStrip();
+        trayProgressItem = new Forms.ToolStripMenuItem("진행 중인 작업 없음")
+            { Enabled = false };
+        menu.Items.Add(trayProgressItem);
+        menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("하이썬 매니저 열기", null, (_, _) => ShowManager());
         menu.Items.Add("제품 업데이트 확인", null, async (_, _) =>
             await window!.RefreshProductsAsync(true));

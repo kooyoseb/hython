@@ -79,6 +79,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="190" />
           </Grid.RowDefinitions>
           <Grid>
             <Grid.ColumnDefinitions>
@@ -159,6 +160,9 @@
                           <Button Content="제거" Click="Uninstall_Click"
                                   IsEnabled="{Binding CanUninstall}"
                                   Tag="{Binding}" />
+                          <Button Content="복구" Click="Repair_Click"
+                                  IsEnabled="{Binding CanRepair}"
+                                  Tag="{Binding}" />
                           <Button Content="{Binding ActionText}"
                                   Style="{StaticResource PrimaryButton}"
                                   Click="Install_Click" Tag="{Binding}" />
@@ -183,6 +187,73 @@
               </StackPanel>
             </Border>
           </Grid>
+
+          <Border Grid.Row="3" Margin="0,14,0,0" Padding="14"
+                  Background="#121925" BorderBrush="#29364A"
+                  BorderThickness="1" CornerRadius="11">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="작업 대기열" FontWeight="SemiBold" FontSize="14" />
+                <Button Grid.Column="1" Content="작업 기록 열기" Padding="10,4"
+                        Click="OpenHistory_Click" />
+              </Grid>
+              <ProgressBar Grid.Row="1" x:Name="OverallProgress" Height="4"
+                           Margin="0,8" Minimum="0" Maximum="100"
+                           Foreground="#E24E55" Background="#273248" />
+              <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="QueueList">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Grid Margin="2,5,2,7">
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="110" />
+                          <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding ProductName}"
+                                   FontWeight="SemiBold"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Grid.Column="1" Text="{Binding StateText}"
+                                   Margin="8,0" Foreground="#AFC0D9"
+                                   HorizontalAlignment="Center" />
+                        <Button Grid.Column="2" Content="일시정지/재개"
+                                Padding="8,3" IsEnabled="{Binding CanPause}"
+                                Tag="{Binding}" Click="PauseResume_Click" />
+                        <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0,7,0,0">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="3*" />
+                          </Grid.ColumnDefinitions>
+                          <ProgressBar Height="6" Minimum="0" Maximum="100"
+                                       Margin="0,0,12,0"
+                                       VerticalAlignment="Center"
+                                       Value="{Binding Progress}"
+                                       Foreground="#E24E55" Background="#273248" />
+                          <TextBlock Grid.Column="1" Text="{Binding Detail}"
+                                     FontSize="10" Foreground="#9AA7BA"
+                                     TextTrimming="CharacterEllipsis"
+                                     ToolTip="{Binding Detail}" />
+                        </Grid>
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </ScrollViewer>
+            </Grid>
+          </Border>
         </Grid>
       </Grid>
 
@@ -191,7 +262,7 @@
         <Grid Margin="20,0">
           <TextBlock x:Name="StatusText" Text="준비됨" VerticalAlignment="Center"
                      Foreground="#93A0B3" />
-          <TextBlock Text="Hython Manager 1.0.0 · 트레이 실행 중"
+          <TextBlock Text="Hython Manager 1.1.0 · 트레이 실행 중"
                      HorizontalAlignment="Right" VerticalAlignment="Center"
                      Foreground="#66748A" />
         </Grid>

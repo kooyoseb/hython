@@ -34,7 +34,7 @@
                        Foreground="#9DA9BA" FontSize="14" LineHeight="23"
                        Margin="0,18,0,0" />
           </StackPanel>
-          <TextBlock Grid.Row="2" Text="Version 1.0.0 · Kooyoseb"
+          <TextBlock Grid.Row="2" Text="Version 1.1.0 · Kooyoseb"
                      Foreground="#637187" FontSize="11" />
         </Grid>
       </Border>

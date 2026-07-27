@@ -18,7 +18,7 @@ class ManagerContractTests(unittest.TestCase):
         self.assertIn("NotifyIcon", app)
         self.assertIn("Global\\Kooyoseb.Hython.Manager", app)
         self.assertIn("PublishSingleFile=true", build)
-        self.assertIn("<Version>1.0.0</Version>", project)
+        self.assertIn("<Version>1.1.0</Version>", project)
 
     def test_catalog_recognizes_products_without_mixing_release_tags(self):
         source = self.text(
@@ -43,10 +43,10 @@ class ManagerContractTests(unittest.TestCase):
         )
         self.assertIn("selectedName + \".sha256\"", source)
         self.assertIn("다운로드 파일의 SHA-256 검증에 실패했습니다.", source)
-        self.assertIn("await using FileStream output = File.Create(path)", source)
+        self.assertIn("string partial = path + \".part\"", source)
         self.assertLess(
             source.index("await output.FlushAsync();"),
-            source.index("FileStream verification = File.OpenRead(path)"),
+            source.index("File.Move(partial, path, true)"),
         )
         self.assertIn("await using (FileStream verification", source)
 
@@ -100,10 +100,10 @@ class ManagerContractTests(unittest.TestCase):
             "MajorUpgrade",
             "ManagerStartMenu",
             "ManagerDesktopFeature",
-            'Title="Hython Manager 1.0.0"',
+            'Title="Hython Manager 1.1.0"',
         ):
             self.assertIn(marker, wix)
-        self.assertIn('VERSION = "1.0.0"', builder)
+        self.assertIn('VERSION = "1.1.0"', builder)
         self.assertIn("HythonManager-{VERSION}-x64.msi", builder)
         self.assertIn("removeOnUninstall", wix)
 
@@ -124,6 +124,38 @@ class ManagerContractTests(unittest.TestCase):
         self.assertIn("window.Show()", app)
         self.assertIn("--install-silent", app)
         self.assertIn("--uninstall-silent", app)
+
+    def test_manager_has_resilient_operation_queue(self):
+        queue = self.text(
+            "manager/HythonManager/Services/OperationQueueService.cs"
+        )
+        operation = self.text("manager/HythonManager/Models/OperationItem.cs")
+        catalog = self.text(
+            "manager/HythonManager/Services/ProductCatalogService.cs"
+        )
+        history = self.text(
+            "manager/HythonManager/Services/OperationHistory.cs"
+        )
+        app = self.text("manager/HythonManager/App.xaml.cs")
+        xaml = self.text("manager/HythonManager/MainWindow.xaml")
+        for marker in (
+            "ObservableCollection<OperationItem>", "Enqueue", "OverallProgressChanged",
+            "OperationState.RebootRequired", "TryRepairAsync",
+        ):
+            self.assertIn(marker, queue)
+        for marker in ("ManualResetEventSlim", "Pause()", "Resume()"):
+            self.assertIn(marker, operation)
+        for marker in (
+            "RangeHeaderValue", 'string partial = path + ".part"',
+            "attempt <= 4", "/qn /norestart", "/fa ",
+        ):
+            self.assertIn(marker, catalog)
+        self.assertNotIn("/passive", catalog)
+        self.assertIn('"작업-{DateTime.Now:yyyy-MM}.jsonl"', history)
+        self.assertIn("JsonSerializer.Serialize", history)
+        self.assertIn("trayProgressItem", app)
+        for marker in ("QueueList", "OverallProgress", "일시정지", "작업 기록 열기"):
+            self.assertIn(marker, xaml)
 
 
 if __name__ == "__main__":

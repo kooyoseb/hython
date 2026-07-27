@@ -15,6 +15,9 @@ public sealed class ProductInfo
     public string? AssetDigest { get; init; }
     public string? ChecksumUrl { get; init; }
     public string? UninstallCommand { get; set; }
+    public string? ProductCode { get; set; }
+    public string? InstalledPath { get; set; }
+    public bool IsHealthy { get; set; } = true;
     public ProductState State => InstalledVersion is null
         ? ProductState.NotInstalled
         : LatestVersion > InstalledVersion ? ProductState.UpdateAvailable : ProductState.Installed;
@@ -22,6 +25,7 @@ public sealed class ProductInfo
     {
         ProductState.NotInstalled => "설치되지 않음",
         ProductState.UpdateAvailable => $"업데이트 가능 · {InstalledVersion}",
+        _ when !IsHealthy => $"손상 감지 · {InstalledVersion}",
         _ => $"설치됨 · {InstalledVersion}"
     };
     public string ActionText => State switch
@@ -31,4 +35,5 @@ public sealed class ProductInfo
         _ => "다시 설치"
     };
     public bool CanUninstall => InstalledVersion is not null;
+    public bool CanRepair => InstalledVersion is not null && !IsHealthy;
 }

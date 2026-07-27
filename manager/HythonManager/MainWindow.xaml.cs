@@ -4,12 +4,15 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Diagnostics;
+using System.IO;
 
 namespace HythonManager;
 
 public partial class MainWindow : Window
 {
     private readonly ProductCatalogService catalog = new();
+    private readonly OperationQueueService queue;
     private readonly ManagerSettings settings;
     private readonly SemaphoreSlim operationLock = new(1, 1);
     private IReadOnlyList<ProductInfo> currentProducts = Array.Empty<ProductInfo>();
@@ -19,7 +22,22 @@ public partial class MainWindow : Window
     public MainWindow(ManagerSettings settings)
     {
         this.settings = settings;
+        queue = new OperationQueueService(catalog);
         InitializeComponent();
+        QueueList.ItemsSource = queue.Items;
+        queue.OverallProgressChanged += (value, text) => Dispatcher.Invoke(() =>
+        {
+            OverallProgress.Value = value;
+            StatusText.Text = text;
+            App.UpdateTrayProgress(value, text);
+        });
+        queue.OperationFinished += item => Dispatcher.Invoke(() =>
+        {
+            App.Notify(item.State == OperationState.RebootRequired
+                    ? "재부팅 필요" : item.State == OperationState.Completed
+                        ? "작업 완료" : "작업 실패",
+                $"{item.ProductName}: {item.Detail}");
+        });
         StartWithWindowsCheck.IsChecked = settings.StartWithWindows;
         BackgroundChecksCheck.IsChecked = settings.BackgroundChecks;
         settingsLoaded = true;
@@ -70,35 +88,8 @@ public partial class MainWindow : Window
     private async void Install_Click(object sender, RoutedEventArgs e)
     {
         if ((sender as FrameworkElement)?.Tag is not ProductInfo product) return;
-        await RunProductActionAsync(product, async () =>
-        {
-            if (product.Id == "vscode")
-            {
-                StatusText.Text = "VS Code Marketplace에서 확장 설치 중";
-                LoadingText.Text = "code 명령으로 Hython Development 설치 중…";
-                int vscodeCode = await ProductCatalogService.InstallAsync(product, null);
-                if (vscodeCode != 0)
-                    throw new InvalidOperationException(
-                        $"VS Code 확장 설치 오류 코드: {vscodeCode}");
-                return;
-            }
-            var progress = new Progress<double>(value =>
-            {
-                StatusText.Text = $"{product.Name} 다운로드 중 · {value:P0}";
-                LoadingText.Text = $"{product.Name} 다운로드 중 · {value:P0}";
-            });
-            string path = await catalog.DownloadVerifiedAsync(product, progress);
-            StatusText.Text = $"{product.Name} 설치 중";
-            if (product.Id == "manager")
-            {
-                ProductCatalogService.StartManagerUpgrade(path);
-                App.ExitForUpgrade();
-                return;
-            }
-            int code = await ProductCatalogService.InstallAsync(product, path);
-            if (code is not (0 or 3010 or 1641))
-                throw new InvalidOperationException($"설치 프로그램 오류 코드: {code}");
-        });
+        queue.Enqueue(product);
+        StatusText.Text = $"{product.Name} 작업을 대기열에 추가했습니다.";
     }
 
     public async Task InstallOrUpdateAllAsync()
@@ -114,13 +105,8 @@ public partial class MainWindow : Window
                 $"{targets.Length}개 제품을 차례로 설치하거나 업데이트할까요?",
                 "Hython Manager", MessageBoxButton.YesNo,
                 MessageBoxImage.Question) != MessageBoxResult.Yes) return;
-        foreach (ProductInfo product in targets)
-        {
-            bool succeeded = await InstallProductCoreAsync(product);
-            if (!succeeded) break;
-            if (product.Id == "manager") return;
-        }
-        await RefreshProductsAsync(true);
+        foreach (ProductInfo product in targets) queue.Enqueue(product);
+        StatusText.Text = $"{targets.Length}개 작업을 대기열에 추가했습니다.";
     }
 
     private async Task<bool> InstallProductCoreAsync(ProductInfo product)
@@ -175,6 +161,32 @@ public partial class MainWindow : Window
             if (code is not (0 or 3010 or 1641))
                 throw new InvalidOperationException($"제거 프로그램 오류 코드: {code}");
         });
+    }
+
+    private async void Repair_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.Tag is not ProductInfo product) return;
+        StatusText.Text = $"{product.Name} 복구 중";
+        bool repaired = await ProductCatalogService.TryRepairAsync(product);
+        await OperationHistory.WriteAsync(product.Name, "복구",
+            repaired ? "완료" : "실패",
+            repaired ? "Windows Installer 복구 완료" : "복구를 완료하지 못했습니다.");
+        App.Notify(repaired ? "복구 완료" : "복구 실패",
+            $"{product.Name}: {(repaired ? "설치가 복구되었습니다." : "작업 기록을 확인하세요.")}");
+        await RefreshProductsAsync(false);
+    }
+
+    private void PauseResume_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.Tag is OperationItem item)
+            queue.PauseOrResume(item);
+    }
+
+    private void OpenHistory_Click(object sender, RoutedEventArgs e)
+    {
+        Directory.CreateDirectory(OperationHistory.LogDirectory);
+        Process.Start(new ProcessStartInfo("explorer.exe", OperationHistory.LogDirectory)
+            { UseShellExecute = true });
     }
 
     private async Task RunProductActionAsync(ProductInfo product, Func<Task> action)

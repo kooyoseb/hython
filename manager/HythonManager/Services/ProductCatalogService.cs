@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -17,14 +18,14 @@ public sealed class ProductCatalogService
 
     public ProductCatalogService()
     {
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("Hython-Manager/0.1.0");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("Hython-Manager/1.1.0");
         client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
     }
 
     public async Task<IReadOnlyList<ProductInfo>> LoadAsync()
     {
-        using Stream stream = await client.GetStreamAsync(Api);
-        using JsonDocument json = await JsonDocument.ParseAsync(stream);
+        string payload = await GetStringWithRetryAsync(Api);
+        using JsonDocument json = JsonDocument.Parse(payload);
         var products = new Dictionary<string, ProductInfo>(StringComparer.OrdinalIgnoreCase);
         foreach (JsonElement release in json.RootElement.EnumerateArray())
         {
@@ -147,6 +148,9 @@ public sealed class ProductCatalogService
             {
                 product.InstalledVersion = match.Version;
                 product.UninstallCommand = match.Uninstall;
+                product.ProductCode = match.ProductCode;
+                product.InstalledPath = match.InstalledPath;
+                product.IsHealthy = CheckHealth(product);
             }
         }
         ProductInfo? vscode = products.FirstOrDefault(p => p.Id == "vscode");
@@ -171,39 +175,93 @@ public sealed class ProductCatalogService
                 if (!name.Contains("Hython", StringComparison.OrdinalIgnoreCase)) continue;
                 if (!Version.TryParse(Convert.ToString(child?.GetValue("DisplayVersion")),
                                       out Version? version)) continue;
+                string? displayIcon = Convert.ToString(child?.GetValue("DisplayIcon"));
+                string? installLocation = Convert.ToString(child?.GetValue("InstallLocation"));
+                string? installedPath = !string.IsNullOrWhiteSpace(displayIcon)
+                    ? displayIcon.Split(',')[0].Trim().Trim('"')
+                    : installLocation;
                 result.Add(new Registration(name, version,
-                    Convert.ToString(child?.GetValue("UninstallString"))));
+                    Convert.ToString(child?.GetValue("UninstallString")),
+                    childName, installedPath));
             }
         }
         return result;
     }
 
     public async Task<string> DownloadVerifiedAsync(
-        ProductInfo product, IProgress<double>? progress = null)
+        ProductInfo product, IProgress<double>? progress = null,
+        OperationItem? operation = null)
     {
         string directory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "Hython", "Manager", "Downloads", product.Tag);
         Directory.CreateDirectory(directory);
         string path = Path.Combine(directory, product.AssetName!);
+        string partial = path + ".part";
+        if (File.Exists(path) && await VerifyAsync(product, path))
         {
-            using HttpResponseMessage response = await client.GetAsync(
-                product.DownloadUrl, HttpCompletionOption.ResponseHeadersRead);
-            response.EnsureSuccessStatusCode();
-            long total = response.Content.Headers.ContentLength ?? -1;
-            await using Stream input = await response.Content.ReadAsStreamAsync();
-            await using FileStream output = File.Create(path);
-            byte[] buffer = new byte[1024 * 128];
-            long received = 0;
-            int read;
-            while ((read = await input.ReadAsync(buffer)) > 0)
-            {
-                await output.WriteAsync(buffer.AsMemory(0, read));
-                received += read;
-                if (total > 0) progress?.Report((double)received / total);
-            }
-            await output.FlushAsync();
+            progress?.Report(1);
+            return path;
         }
+        if (File.Exists(path)) File.Delete(path);
+        Exception? lastError = null;
+        for (int attempt = 1; attempt <= 4; attempt++)
+        {
+            try
+            {
+                long existing = File.Exists(partial) ? new FileInfo(partial).Length : 0;
+                using var request = new HttpRequestMessage(HttpMethod.Get, product.DownloadUrl);
+                if (existing > 0) request.Headers.Range = new RangeHeaderValue(existing, null);
+                using HttpResponseMessage response = await client.SendAsync(request,
+                    HttpCompletionOption.ResponseHeadersRead,
+                    operation?.Cancellation.Token ?? CancellationToken.None);
+                if (existing > 0 && response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    File.Delete(partial);
+                    existing = 0;
+                }
+                response.EnsureSuccessStatusCode();
+                long total = existing + (response.Content.Headers.ContentLength ?? 0);
+                await using Stream input = await response.Content.ReadAsStreamAsync(
+                    operation?.Cancellation.Token ?? CancellationToken.None);
+                await using FileStream output = new(partial, FileMode.Append,
+                    FileAccess.Write, FileShare.Read);
+                byte[] buffer = new byte[1024 * 128];
+                long received = existing;
+                int read;
+                while ((read = await input.ReadAsync(buffer,
+                           operation?.Cancellation.Token ?? CancellationToken.None)) > 0)
+                {
+                    operation?.PauseGate.Wait(operation.Cancellation.Token);
+                    await output.WriteAsync(buffer.AsMemory(0, read),
+                        operation?.Cancellation.Token ?? CancellationToken.None);
+                    received += read;
+                    if (total > 0) progress?.Report((double)received / total);
+                }
+                await output.FlushAsync();
+                await output.DisposeAsync();
+                await input.DisposeAsync();
+                File.Move(partial, path, true);
+                if (!await VerifyAsync(product, path))
+                    throw new InvalidDataException(
+                        "다운로드 파일의 SHA-256 검증에 실패했습니다.");
+                return path;
+            }
+            catch (Exception ex) when (attempt < 4 &&
+                                       ex is HttpRequestException or IOException
+                                           or TaskCanceledException)
+            {
+                lastError = ex;
+                if (operation is not null)
+                    operation.Detail = $"네트워크 오류 · {attempt}/4회 재시도 대기 중";
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, attempt)));
+            }
+        }
+        throw new IOException("다운로드를 4회 재시도했지만 완료하지 못했습니다.", lastError);
+    }
+
+    private async Task<bool> VerifyAsync(ProductInfo product, string path)
+    {
         string? expected = product.AssetDigest?.StartsWith("sha256:") == true
             ? product.AssetDigest[7..] : null;
         if (expected is null && product.ChecksumUrl is not null)
@@ -215,12 +273,9 @@ public sealed class ProductCatalogService
             await using (FileStream verification = File.OpenRead(path))
                 actual = Convert.ToHexString(await SHA256.HashDataAsync(verification));
             if (!actual.Equals(expected, StringComparison.OrdinalIgnoreCase))
-            {
-                File.Delete(path);
-                throw new InvalidDataException("다운로드 파일의 SHA-256 검증에 실패했습니다.");
-            }
+                return false;
         }
-        return path;
+        return true;
     }
 
     public static async Task<int> InstallAsync(ProductInfo product, string? path)
@@ -232,7 +287,7 @@ public sealed class ProductCatalogService
             throw new InvalidOperationException("설치 파일 경로가 없습니다.");
         ProcessStartInfo start;
         if (Path.GetExtension(path).Equals(".msi", StringComparison.OrdinalIgnoreCase))
-            start = new("msiexec.exe", $"/i \"{path}\" /passive /norestart")
+            start = new("msiexec.exe", $"/i \"{path}\" /qn /norestart")
                 { UseShellExecute = true, Verb = "runas" };
         else
             start = new(path) { UseShellExecute = true, Verb = "runas" };
@@ -252,7 +307,7 @@ public sealed class ProductCatalogService
         string command = product.UninstallCommand;
         Match msi = Regex.Match(command, @"\{[0-9A-F-]{36}\}", RegexOptions.IgnoreCase);
         ProcessStartInfo start = msi.Success
-            ? new("msiexec.exe", $"/x {msi.Value} /passive /norestart")
+            ? new("msiexec.exe", $"/x {msi.Value} /qn /norestart")
             : new("cmd.exe", "/d /c " + command);
         start.UseShellExecute = true;
         start.Verb = "runas";
@@ -267,7 +322,7 @@ public sealed class ProductCatalogService
         if (!File.Exists(msiPath))
             throw new FileNotFoundException("Manager 업데이트 MSI를 찾을 수 없습니다.", msiPath);
         string command =
-            $"timeout /t 2 /nobreak >nul & msiexec.exe /i \"{msiPath}\" /passive /norestart";
+            $"timeout /t 2 /nobreak >nul & msiexec.exe /i \"{msiPath}\" /qn /norestart";
         var start = new ProcessStartInfo("cmd.exe")
         {
             UseShellExecute = false,
@@ -278,6 +333,71 @@ public sealed class ProductCatalogService
         start.ArgumentList.Add("/c");
         start.ArgumentList.Add(command);
         Process.Start(start);
+    }
+
+    public static async Task<bool> TryRepairAsync(ProductInfo product)
+    {
+        if (string.IsNullOrWhiteSpace(product.ProductCode)) return false;
+        var start = new ProcessStartInfo("msiexec.exe",
+            $"/fa {product.ProductCode} /qn /norestart")
+        {
+            UseShellExecute = true,
+            Verb = "runas"
+        };
+        try
+        {
+            using Process process = Process.Start(start)!;
+            await process.WaitForExitAsync();
+            return process.ExitCode is 0 or 3010 or 1641;
+        }
+        catch { return false; }
+    }
+
+    private async Task<string> GetStringWithRetryAsync(string url)
+    {
+        Exception? last = null;
+        for (int attempt = 1; attempt <= 4; attempt++)
+        {
+            try
+            {
+                using HttpResponseMessage response = await client.GetAsync(url);
+                if ((int)response.StatusCode == 403 &&
+                    response.Headers.TryGetValues("X-RateLimit-Remaining", out var values) &&
+                    values.FirstOrDefault() == "0")
+                    throw new HttpRequestException(
+                        "GitHub API 요청 한도에 도달했습니다. 잠시 뒤 자동으로 다시 시도합니다.");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException ex) when (attempt < 4)
+            {
+                last = ex;
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, attempt)));
+            }
+        }
+        throw new HttpRequestException(
+            "GitHub에 연결할 수 없습니다. 네트워크를 확인한 뒤 다시 시도하세요.", last);
+    }
+
+    private static bool CheckHealth(ProductInfo product)
+    {
+        if (!string.IsNullOrWhiteSpace(product.InstalledPath) &&
+            Path.HasExtension(product.InstalledPath))
+            return File.Exists(product.InstalledPath);
+        string? known = product.Id switch
+        {
+            "hython" => Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                "Hython", "hython.exe"),
+            "studio" => Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                "Hython Studio", "HythonStudio.exe"),
+            "manager" => Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Hython Manager", "HythonManager.exe"),
+            _ => null
+        };
+        return known is null || File.Exists(known);
     }
 
     private static int ProductOrder(string id) => id switch
@@ -369,7 +489,8 @@ public sealed class ProductCatalogService
     }
 
     private sealed record ProcessResult(int ExitCode, string Output);
-    private sealed record Registration(string Name, Version Version, string? Uninstall);
+    private sealed record Registration(string Name, Version Version, string? Uninstall,
+        string ProductCode, string? InstalledPath);
 }
 
 internal static class JsonElementExtensions
