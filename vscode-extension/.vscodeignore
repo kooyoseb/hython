@@ -2,5 +2,6 @@
 .vscode/**
 node_modules/**
 *.vsix
+*.sha256
 npm-debug.log
 test/**

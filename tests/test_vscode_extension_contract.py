@@ -16,6 +16,11 @@ class VSCodeExtensionContractTests(unittest.TestCase):
         languages = manifest["contributes"]["languages"]
         self.assertEqual(languages[0]["id"], "hython")
         self.assertIn(".hy", languages[0]["extensions"])
+        language_icon = languages[0]["icon"]
+        self.assertEqual(language_icon["light"], "./images/hython-icon.png")
+        self.assertEqual(language_icon["dark"], "./images/hython-icon.png")
+        for icon_path in language_icon.values():
+            self.assertTrue((EXTENSION / icon_path).is_file())
         commands = {
             item["command"] for item in manifest["contributes"]["commands"]
         }

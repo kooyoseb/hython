@@ -1,5 +1,10 @@
 # 변경 기록
 
+## Hython Development 1.0.1 - 2026-07-27
+
+- VS Code 탐색기와 편집기 탭의 `.hy` 파일에 정식 Hython 아이콘을 표시합니다.
+- 밝은 테마와 어두운 테마의 언어 아이콘을 모두 등록했습니다.
+
 ## Hython Development 1.0.0 - 2026-07-27
 
 - VS Code용 Hython 언어 확장을 추가했습니다.

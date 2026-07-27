@@ -2,7 +2,7 @@
   "name": "hython-development",
   "displayName": "Hython Development",
   "description": "Hython 언어 지원: 문법 강조, 한글 진단, 자동완성, 실행과 빌드",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "kooyoseb",
   "icon": "images/hython-icon.png",
   "galleryBanner": {
@@ -54,7 +54,11 @@
         "extensions": [
           ".hy"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/hython-icon.png",
+          "dark": "./images/hython-icon.png"
+        }
       }
     ],
     "grammars": [

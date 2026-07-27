@@ -311,7 +311,7 @@ studio\release\HythonStudio.exe
 
 ```console
 build-vscode-extension.bat
-code --install-extension vscode-extension\hython-development-1.0.0.vsix
+code --install-extension vscode-extension\hython-development-1.0.1.vsix
 ```
 
 ## 소스에서 개발

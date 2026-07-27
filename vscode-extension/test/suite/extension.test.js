@@ -32,6 +32,14 @@ async function runTests() {
   assert.ok(extension, "확장이 Extension Host에 로드되어야 합니다.");
   await extension.activate();
 
+  await check(".hy 파일 아이콘이 확장 매니페스트에 등록되어 있다", async () => {
+    const languages = extension.packageJSON.contributes.languages;
+    const hython = languages.find(language => language.id === "hython");
+    assert.ok(hython.icon, "Hython 언어 아이콘이 필요합니다.");
+    assert.strictEqual(hython.icon.light, "./images/hython-icon.png");
+    assert.strictEqual(hython.icon.dark, "./images/hython-icon.png");
+  });
+
   await check(".hy 파일을 Hython 언어로 인식한다", async () => {
     const document = await vscode.workspace.openTextDocument(fixture);
     assert.strictEqual(document.languageId, "hython");
