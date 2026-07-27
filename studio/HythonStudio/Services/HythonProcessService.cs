@@ -20,9 +20,10 @@ public static class HythonProcessService
             RedirectStandardInput = standardInput is not null,
             CreateNoWindow = true,
             StandardOutputEncoding = Encoding.UTF8,
-            StandardErrorEncoding = Encoding.UTF8,
-            StandardInputEncoding = Encoding.UTF8
+            StandardErrorEncoding = Encoding.UTF8
         };
+        if (standardInput is not null)
+            start.StandardInputEncoding = Encoding.UTF8;
         using Process process = new() { StartInfo = start };
         process.Start();
         if (standardInput is not null)

@@ -12,7 +12,7 @@ class StudioContractTests(unittest.TestCase):
     def test_studio_release_surface_is_complete(self):
         xaml = self.text("studio/HythonStudio/MainWindow.xaml")
         for marker in (
-            "Hython Studio 1.0.2", "ProjectTree", "SearchResultsList",
+            "Hython Studio 1.0.3", "ProjectTree", "SearchResultsList",
             "DebugVariables", "TerminalInput", "PackageSpecInput",
             "ProblemsList", "SymbolsList",
         ):
@@ -41,9 +41,9 @@ class StudioContractTests(unittest.TestCase):
         self.assertIn('Package Name="Hython Studio"', wix)
         self.assertIn("E34AC48E-E305-48F2-AC51-24FBE48FB3B2", wix)
         self.assertIn("StudioDesktopFeature", wix)
-        self.assertIn('Title="Hython Studio 1.0.2"', wix)
+        self.assertIn('Title="Hython Studio 1.0.3"', wix)
         builder = self.text("scripts/build_studio_installer.py")
-        self.assertIn('VERSION = "1.0.2"', builder)
+        self.assertIn('VERSION = "1.0.3"', builder)
 
     def test_start_page_uses_embedded_hython_icon(self):
         project = self.text("studio/HythonStudio/HythonStudio.csproj")
@@ -72,6 +72,22 @@ class StudioContractTests(unittest.TestCase):
         self.assertIn("-m pip show hython-lang", source)
         self.assertIn("-m pip install --upgrade hython-lang", source)
         self.assertIn("-m pip uninstall -y hython-lang", source)
+
+    def test_process_input_encoding_requires_redirected_input(self):
+        source = self.text(
+            "studio/HythonStudio/Services/HythonProcessService.cs"
+        )
+        self.assertIn(
+            "RedirectStandardInput = standardInput is not null", source
+        )
+        self.assertIn(
+            "if (standardInput is not null)\n"
+            "            start.StandardInputEncoding = Encoding.UTF8;",
+            source,
+        )
+        initializer = source.split("ProcessStartInfo start = new()", 1)[1]
+        initializer = initializer.split("};", 1)[0]
+        self.assertNotIn("StandardInputEncoding", initializer)
 
     def test_no_unfinished_ui_placeholders_remain(self):
         source = "\n".join(

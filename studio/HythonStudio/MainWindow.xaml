@@ -116,7 +116,7 @@
       </StatusBarItem>
       <Separator />
       <StatusBarItem HorizontalAlignment="Right">
-        <TextBlock Text="Hython Studio 1.0.2 · HBC VM IDE" />
+        <TextBlock Text="Hython Studio 1.0.3 · HBC VM IDE" />
       </StatusBarItem>
     </StatusBar>
 
