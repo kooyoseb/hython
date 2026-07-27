@@ -41,7 +41,7 @@ def find_csc() -> Path:
 
 
 def main() -> int:
-    if __version__ != "2.0.4":
+    if __version__ != "2.0.5":
         raise SystemExit(f"setup.exe 버전을 갱신하세요: 현재 {__version__}")
     msi = ROOT / "release" / f"Hython-{__version__}-x64.msi"
     if not msi.is_file():

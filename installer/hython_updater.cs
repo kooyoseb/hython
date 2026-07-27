@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -16,8 +17,8 @@ using System.Windows.Forms;
 [assembly: System.Reflection.AssemblyTitle("Hython Updater")]
 [assembly: System.Reflection.AssemblyCompany("Kooyoseb")]
 [assembly: System.Reflection.AssemblyProduct("Hython Updater")]
-[assembly: System.Reflection.AssemblyVersion("2.0.4.0")]
-[assembly: System.Reflection.AssemblyFileVersion("2.0.4.0")]
+[assembly: System.Reflection.AssemblyVersion("2.0.5.0")]
+[assembly: System.Reflection.AssemblyFileVersion("2.0.5.0")]
 
 namespace HythonUpdater
 {
@@ -39,7 +40,7 @@ namespace HythonUpdater
     internal static class UpdateEngine
     {
         private const string ReleasesApi =
-            "https://api.github.com/repos/kooyoseb/hython/releases/latest";
+            "https://api.github.com/repos/kooyoseb/hython/releases?per_page=100";
 
         public static Version InstalledVersion()
         {
@@ -83,34 +84,52 @@ namespace HythonUpdater
             using (WebClient client = NewClient())
             {
                 string json = client.DownloadString(ReleasesApi);
-                var root = new JavaScriptSerializer().DeserializeObject(json)
-                    as Dictionary<string, object>;
-                if (root == null) throw new InvalidDataException("릴리스 응답을 읽을 수 없습니다.");
-                string tag = Convert.ToString(root["tag_name"]);
-                Version version;
-                if (!Version.TryParse(tag.TrimStart('v', 'V'), out version))
-                    throw new InvalidDataException("릴리스 버전이 올바르지 않습니다: " + tag);
-                var result = new ReleaseInfo { Version = version, Tag = tag };
-                object[] assets = root["assets"] as object[];
-                if (assets == null) throw new InvalidDataException("릴리스 파일 목록이 없습니다.");
-                foreach (object item in assets)
+                object[] releases = new JavaScriptSerializer().DeserializeObject(json)
+                    as object[];
+                if (releases == null)
+                    throw new InvalidDataException("릴리스 응답을 읽을 수 없습니다.");
+                foreach (object releaseItem in releases)
                 {
-                    var asset = item as Dictionary<string, object>;
-                    if (asset == null) continue;
-                    var parsed = new ReleaseAsset {
-                        Name = Convert.ToString(asset["name"]),
-                        Url = Convert.ToString(asset["browser_download_url"]),
-                        Digest = asset.ContainsKey("digest") ? Convert.ToString(asset["digest"]) : ""
-                    };
-                    if (parsed.Name.EndsWith("-x64.msi", StringComparison.OrdinalIgnoreCase))
-                        result.Msi = parsed;
-                    else if (parsed.Name.EndsWith("-x64.msi.sha256", StringComparison.OrdinalIgnoreCase))
-                        result.Checksum = parsed;
+                    var root = releaseItem as Dictionary<string, object>;
+                    if (root == null || IsTrue(root, "draft") || IsTrue(root, "prerelease"))
+                        continue;
+                    string tag = root.ContainsKey("tag_name")
+                        ? Convert.ToString(root["tag_name"]) : "";
+                    if (!Regex.IsMatch(tag, @"^[vV]\d+\.\d+\.\d+(?:\.\d+)?$"))
+                        continue;
+                    Version version;
+                    if (!Version.TryParse(tag.Substring(1), out version))
+                        continue;
+                    var result = new ReleaseInfo { Version = version, Tag = tag };
+                    object[] assets = root.ContainsKey("assets") ? root["assets"] as object[] : null;
+                    if (assets == null) continue;
+                    string msiName = "Hython-" + version + "-x64.msi";
+                    foreach (object item in assets)
+                    {
+                        var asset = item as Dictionary<string, object>;
+                        if (asset == null) continue;
+                        var parsed = new ReleaseAsset {
+                            Name = Convert.ToString(asset["name"]),
+                            Url = Convert.ToString(asset["browser_download_url"]),
+                            Digest = asset.ContainsKey("digest") ? Convert.ToString(asset["digest"]) : ""
+                        };
+                        if (String.Equals(parsed.Name, msiName, StringComparison.OrdinalIgnoreCase))
+                            result.Msi = parsed;
+                        else if (String.Equals(parsed.Name, msiName + ".sha256",
+                                               StringComparison.OrdinalIgnoreCase))
+                            result.Checksum = parsed;
+                    }
+                    if (result.Msi != null)
+                        return result;
                 }
-                if (result.Msi == null)
-                    throw new InvalidDataException("최신 릴리스에 x64 MSI 파일이 없습니다.");
-                return result;
+                throw new InvalidDataException(
+                    "Hython 본체의 최신 x64 MSI 릴리스를 찾을 수 없습니다.");
             }
+        }
+
+        private static bool IsTrue(Dictionary<string, object> value, string key)
+        {
+            return value.ContainsKey(key) && Convert.ToBoolean(value[key]);
         }
 
         public static string DownloadAndVerify(ReleaseInfo release)
@@ -167,7 +186,7 @@ namespace HythonUpdater
         {
             var client = new WebClient();
             client.Encoding = Encoding.UTF8;
-            client.Headers[HttpRequestHeader.UserAgent] = "Hython-Updater/2.0.4";
+            client.Headers[HttpRequestHeader.UserAgent] = "Hython-Updater/2.0.5";
             client.Headers[HttpRequestHeader.Accept] = "application/vnd.github+json";
             return client;
         }

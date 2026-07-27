@@ -21,11 +21,20 @@ class WindowsUpdaterContractTests(unittest.TestCase):
 
     def test_updater_only_uses_official_repository(self):
         self.assertIn(
-            "https://api.github.com/repos/kooyoseb/hython/releases/latest",
+            "https://api.github.com/repos/kooyoseb/hython/releases?per_page=100",
             self.source,
         )
         self.assertNotRegex(self.source, r"http://")
         self.assertIn("client.Encoding = Encoding.UTF8", self.source)
+
+    def test_non_core_releases_are_ignored(self):
+        self.assertIn(
+            r'Regex.IsMatch(tag, @"^[vV]\d+\.\d+\.\d+(?:\.\d+)?$")',
+            self.source,
+        )
+        self.assertIn('"Hython-" + version + "-x64.msi"', self.source)
+        self.assertIn('IsTrue(root, "draft")', self.source)
+        self.assertIn('IsTrue(root, "prerelease")', self.source)
 
     def test_download_is_sha256_verified_before_install(self):
         verify_at = self.source.index("SHA256.Create()")
