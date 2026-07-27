@@ -12,7 +12,7 @@ class StudioContractTests(unittest.TestCase):
     def test_studio_release_surface_is_complete(self):
         xaml = self.text("studio/HythonStudio/MainWindow.xaml")
         for marker in (
-            "Hython Studio 1.0.1", "ProjectTree", "SearchResultsList",
+            "Hython Studio 1.0.2", "ProjectTree", "SearchResultsList",
             "DebugVariables", "TerminalInput", "PackageSpecInput",
             "ProblemsList", "SymbolsList",
         ):
@@ -41,6 +41,9 @@ class StudioContractTests(unittest.TestCase):
         self.assertIn('Package Name="Hython Studio"', wix)
         self.assertIn("E34AC48E-E305-48F2-AC51-24FBE48FB3B2", wix)
         self.assertIn("StudioDesktopFeature", wix)
+        self.assertIn('Title="Hython Studio 1.0.2"', wix)
+        builder = self.text("scripts/build_studio_installer.py")
+        self.assertIn('VERSION = "1.0.2"', builder)
 
     def test_start_page_uses_embedded_hython_icon(self):
         project = self.text("studio/HythonStudio/HythonStudio.csproj")
@@ -50,6 +53,25 @@ class StudioContractTests(unittest.TestCase):
             'Source="/HythonStudio;component/Resources/hython-icon.png"',
             xaml,
         )
+
+    def test_engine_manager_selects_only_core_releases(self):
+        source = self.text(
+            "studio/HythonStudio/Services/EngineManagementService.cs"
+        )
+        self.assertIn("releases?per_page=100", source)
+        self.assertIn(r'@"^[vV](\d+\.\d+\.\d+(?:\.\d+)?)$"', source)
+        self.assertIn('$"Hython-{version}-x64.msi"', source)
+        self.assertIn('GetProperty("draft")', source)
+        self.assertIn('GetProperty("prerelease")', source)
+        self.assertNotIn("releases/latest", source)
+
+    def test_engine_manager_uses_real_pypi_distribution_name(self):
+        source = self.text(
+            "studio/HythonStudio/Services/EngineManagementService.cs"
+        )
+        self.assertIn("-m pip show hython-lang", source)
+        self.assertIn("-m pip install --upgrade hython-lang", source)
+        self.assertIn("-m pip uninstall -y hython-lang", source)
 
     def test_no_unfinished_ui_placeholders_remain(self):
         source = "\n".join(

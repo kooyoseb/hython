@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
 namespace HythonStudio.Services;
@@ -23,7 +24,7 @@ public static class EngineManagementService
     {
         var python = await RunAsync("py", "--version");
         (int ExitCode, string Output) pip = python.ExitCode == 0
-            ? await RunAsync("py", "-m pip show hython")
+            ? await RunAsync("py", "-m pip show hython-lang")
             : (ExitCode: -1, Output: "");
         var winget = await RunAsync("winget", "--version");
         HythonEngine? engine = HythonLocator.Find();
@@ -58,7 +59,7 @@ public static class EngineManagementService
         {
             case EngineInstallSource.Pip:
                 progress?.Report("PyPI Hython 패키지를 제거하는 중…");
-                return await RunAsync("py", "-m pip uninstall -y hython");
+                return await RunAsync("py", "-m pip uninstall -y hython-lang");
             case EngineInstallSource.Winget:
                 progress?.Report("Winget으로 Hython을 제거하는 중…");
                 return await RunAsync(
@@ -128,7 +129,7 @@ public static class EngineManagementService
     private static async Task<(int, string)> RunPipAsync(IProgress<string>? progress)
     {
         progress?.Report("PyPI에서 Hython을 설치·업데이트하는 중…");
-        return await RunAsync("py", "-m pip install --upgrade hython");
+        return await RunAsync("py", "-m pip install --upgrade hython-lang");
     }
 
     private static async Task<(int, string)> RunWingetAsync(
@@ -158,15 +159,37 @@ public static class EngineManagementService
         progress?.Report("GitHub 최신 릴리스를 확인하는 중…");
         using HttpClient client = Client();
         string json = await client.GetStringAsync(
-            $"https://api.github.com/repos/{Repository}/releases/latest");
+            $"https://api.github.com/repos/{Repository}/releases?per_page=100");
         using JsonDocument document = JsonDocument.Parse(json);
-        JsonElement asset = document.RootElement.GetProperty("assets")
+        (Version Version, JsonElement Asset)? selected = document.RootElement
             .EnumerateArray()
-            .FirstOrDefault(item =>
-                item.GetProperty("name").GetString()?.EndsWith(
-                    ".msi", StringComparison.OrdinalIgnoreCase) == true);
-        if (asset.ValueKind == JsonValueKind.Undefined)
-            return (-1, "최신 GitHub 릴리스에서 MSI 파일을 찾을 수 없습니다.");
+            .Where(release =>
+                !release.GetProperty("draft").GetBoolean() &&
+                !release.GetProperty("prerelease").GetBoolean())
+            .Select(release =>
+            {
+                string tag = release.GetProperty("tag_name").GetString() ?? "";
+                Match match = Regex.Match(
+                    tag, @"^[vV](\d+\.\d+\.\d+(?:\.\d+)?)$");
+                if (!match.Success ||
+                    !Version.TryParse(match.Groups[1].Value, out Version? version))
+                    return ((Version Version, JsonElement Asset)?)null;
+                string expected = $"Hython-{version}-x64.msi";
+                JsonElement asset = release.GetProperty("assets").EnumerateArray()
+                    .FirstOrDefault(item => string.Equals(
+                        item.GetProperty("name").GetString(), expected,
+                        StringComparison.OrdinalIgnoreCase));
+                return asset.ValueKind == JsonValueKind.Undefined
+                    ? null : (version, asset);
+            })
+            .Where(item => item.HasValue)
+            .Select(item => item!.Value)
+            .OrderByDescending(item => item.Version)
+            .Cast<(Version Version, JsonElement Asset)?>()
+            .FirstOrDefault();
+        if (!selected.HasValue)
+            return (-1, "Hython 본체의 최신 x64 MSI 릴리스를 찾을 수 없습니다.");
+        JsonElement asset = selected.Value.Asset;
         string name = asset.GetProperty("name").GetString()!;
         string url = asset.GetProperty("browser_download_url").GetString()!;
         string path = Path.Combine(Path.GetTempPath(), name);
