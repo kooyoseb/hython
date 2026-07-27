@@ -11,6 +11,7 @@ public sealed class ManagerSettings
     public bool StartWithWindows { get; set; } = true;
     public bool BackgroundChecks { get; set; } = true;
     public int CheckIntervalHours { get; set; } = 6;
+    public string Theme { get; set; } = ThemeService.Dark;
 
     public static ManagerSettings Load()
     {
@@ -20,7 +21,9 @@ public sealed class ManagerSettings
             StartWithWindows = ReadBool(key, "StartWithWindows", true),
             BackgroundChecks = ReadBool(key, "BackgroundChecks", true),
             CheckIntervalHours = Math.Clamp(
-                Convert.ToInt32(key?.GetValue("CheckIntervalHours", 6)), 1, 168)
+                Convert.ToInt32(key?.GetValue("CheckIntervalHours", 6)), 1, 168),
+            Theme = Convert.ToString(key?.GetValue("Theme", ThemeService.Dark))
+                    is ThemeService.Light ? ThemeService.Light : ThemeService.Dark
         };
     }
 
@@ -34,6 +37,7 @@ public sealed class ManagerSettings
                          RegistryValueKind.DWord);
             key.SetValue("CheckIntervalHours", CheckIntervalHours,
                          RegistryValueKind.DWord);
+            key.SetValue("Theme", Theme, RegistryValueKind.String);
         }
         using RegistryKey run = Registry.CurrentUser.CreateSubKey(RunKey);
         if (StartWithWindows)

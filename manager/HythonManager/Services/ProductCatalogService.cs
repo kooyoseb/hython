@@ -18,7 +18,7 @@ public sealed class ProductCatalogService
 
     public ProductCatalogService()
     {
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("Hython-Manager/1.1.0");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("Hython-Manager/1.1.1");
         client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
     }
 

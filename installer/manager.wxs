@@ -53,7 +53,7 @@
       </Component>
     </StandardDirectory>
 
-    <Feature Id="ManagerFeature" Title="Hython Manager 1.1.0" Level="1"
+    <Feature Id="ManagerFeature" Title="Hython Manager 1.1.1" Level="1"
              AllowAbsent="no" Display="expand">
       <ComponentRef Id="ManagerExecutable" />
       <ComponentRef Id="ManagerUserSettingsCleanup" />

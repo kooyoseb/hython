@@ -4,7 +4,7 @@
         Title="Hython Manager" Width="1080" Height="720"
         MinWidth="850" MinHeight="560" WindowStartupLocation="CenterScreen"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent">
-  <Border Background="{StaticResource Page}" BorderBrush="#344158"
+  <Border Background="{DynamicResource Page}" BorderBrush="{DynamicResource Stroke}"
           BorderThickness="1" CornerRadius="14">
     <Border.Effect>
       <DropShadowEffect BlurRadius="28" ShadowDepth="8" Opacity="0.55" />
@@ -16,8 +16,8 @@
         <RowDefinition Height="42" />
       </Grid.RowDefinitions>
 
-      <Border Grid.Row="0" Background="#121824" CornerRadius="14,14,0,0"
-              BorderBrush="#263147" BorderThickness="0,0,0,1"
+      <Border Grid.Row="0" Background="{DynamicResource Chrome}" CornerRadius="14,14,0,0"
+              BorderBrush="{DynamicResource Stroke}" BorderThickness="0,0,0,1"
               MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
         <Grid Margin="20,0,10,0">
           <Grid.ColumnDefinitions>
@@ -28,7 +28,7 @@
           <Image Width="34" Height="34" Source="/Resources/hython-icon.png" />
           <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
             <TextBlock Text="Hython Manager" FontWeight="SemiBold" FontSize="17" />
-            <TextBlock Text="하이썬 생태계 통합 관리" Foreground="{StaticResource Muted}"
+            <TextBlock Text="하이썬 생태계 통합 관리" Foreground="{DynamicResource Muted}"
                        FontSize="11" />
           </StackPanel>
           <StackPanel Grid.Column="2" Orientation="Horizontal">
@@ -45,18 +45,18 @@
           <ColumnDefinition Width="225" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Border Background="#111722" BorderBrush="#263147" BorderThickness="0,0,1,0">
+        <Border Background="{DynamicResource Sidebar}" BorderBrush="{DynamicResource Stroke}" BorderThickness="0,0,1,0">
           <StackPanel Margin="18,24">
-            <TextBlock Text="관리" Foreground="#66748A" FontWeight="SemiBold"
+            <TextBlock Text="관리" Foreground="{DynamicResource Subtle}" FontWeight="SemiBold"
                        FontSize="11" Margin="8,0,0,10" />
-            <Border Background="#263248" CornerRadius="9" Padding="14,11">
+            <Border Background="{DynamicResource Selection}" CornerRadius="9" Padding="14,11">
               <TextBlock Text="▦  모든 제품" FontWeight="SemiBold" />
             </Border>
-            <TextBlock Text="Hython" Margin="14,20,0,8" Foreground="#AAB4C3" />
-            <TextBlock Text="Studio" Margin="14,8" Foreground="#AAB4C3" />
-            <TextBlock Text="VS Code 확장" Margin="14,8" Foreground="#AAB4C3" />
-            <Separator Margin="0,22" Background="#263147" />
-            <TextBlock Text="설정" Foreground="#66748A" FontWeight="SemiBold"
+            <TextBlock Text="Hython" Margin="14,20,0,8" Foreground="{DynamicResource Muted}" />
+            <TextBlock Text="Studio" Margin="14,8" Foreground="{DynamicResource Muted}" />
+            <TextBlock Text="VS Code 확장" Margin="14,8" Foreground="{DynamicResource Muted}" />
+            <Separator Margin="0,22" Background="{DynamicResource Stroke}" />
+            <TextBlock Text="설정" Foreground="{DynamicResource Subtle}" FontWeight="SemiBold"
                        FontSize="11" Margin="8,0,0,10" />
             <CheckBox x:Name="StartWithWindowsCheck"
                       Content="Windows 시작 시 실행"
@@ -66,11 +66,22 @@
                       Content="백그라운드 업데이트 확인"
                       Margin="8,6" Checked="Setting_Changed"
                       Unchecked="Setting_Changed" />
+            <TextBlock Text="화면 모드" Margin="8,12,8,4"
+                       Foreground="{DynamicResource Muted}" FontSize="11" />
+            <StackPanel Margin="8,2">
+              <RadioButton x:Name="ThemeDarkRadio" Content="다크 모드"
+                           Tag="Dark" Margin="0,3"
+                           Checked="ThemeRadio_Checked" />
+              <RadioButton x:Name="ThemeLightRadio"
+                           Content="화이트 모드 · 파란색"
+                           Tag="Light" Margin="0,3"
+                           Checked="ThemeRadio_Checked" />
+            </StackPanel>
             <Button Content="설정 저장" Click="SaveSettings_Click"
                     HorizontalAlignment="Stretch" Margin="4,10" />
-            <Separator Margin="0,16" Background="#263147" />
+            <Separator Margin="0,16" Background="{DynamicResource Stroke}" />
             <TextBlock Text="새 GitHub 태그가 게시되면&#x0a;지원 자산을 분석해 제품으로&#x0a;자동 등록합니다."
-                       Foreground="#728096" FontSize="11" LineHeight="18" />
+                       Foreground="{DynamicResource Subtle}" FontSize="11" LineHeight="18" />
           </StackPanel>
         </Border>
 
@@ -90,7 +101,7 @@
             <StackPanel>
               <TextBlock Text="내 Hython" FontSize="30" FontWeight="SemiBold" />
               <TextBlock Text="설치된 제품과 GitHub의 최신 릴리스를 한곳에서 관리합니다."
-                         Foreground="{StaticResource Muted}" Margin="0,7,0,0" />
+                         Foreground="{DynamicResource Muted}" Margin="0,7,0,0" />
             </StackPanel>
             <Button Grid.Column="1" Content="모두 설치·업데이트"
                     Style="{StaticResource PrimaryButton}"
@@ -100,7 +111,7 @@
           </Grid>
 
           <Border Grid.Row="1" Margin="0,24,0,18" Padding="18,13"
-                  Background="#151E2C" BorderBrush="#293950"
+                  Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Stroke}"
                   BorderThickness="1" CornerRadius="10">
             <Grid>
               <Grid.ColumnDefinitions>
@@ -112,7 +123,7 @@
               <TextBlock Grid.Column="1" x:Name="SummaryText"
                          Text="제품 정보를 확인하고 있습니다…" />
               <TextBlock Grid.Column="2" x:Name="LastCheckedText"
-                         Foreground="{StaticResource Muted}" />
+                         Foreground="{DynamicResource Muted}" />
             </Grid>
           </Border>
 
@@ -122,8 +133,8 @@
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <Border Margin="0,0,0,12" Padding="20"
-                            Background="{StaticResource Panel}"
-                            BorderBrush="{StaticResource Stroke}"
+                            Background="{DynamicResource Panel}"
+                            BorderBrush="{DynamicResource Stroke}"
                             BorderThickness="1" CornerRadius="12">
                       <Grid>
                         <Grid.ColumnDefinitions>
@@ -132,8 +143,8 @@
                           <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Border Width="42" Height="42" CornerRadius="11"
-                                Background="#253149" VerticalAlignment="Top">
-                          <TextBlock Text="H" Foreground="#F15B62" FontSize="21"
+                                Background="{DynamicResource Selection}" VerticalAlignment="Top">
+                          <TextBlock Text="H" Foreground="{DynamicResource Accent}" FontSize="21"
                                      FontWeight="Bold" HorizontalAlignment="Center"
                                      VerticalAlignment="Center" />
                         </Border>
@@ -142,15 +153,15 @@
                             <TextBlock Text="{Binding Name}" FontSize="17"
                                        FontWeight="SemiBold" />
                             <Border Margin="10,0" Padding="8,3"
-                                    Background="#202B3D" CornerRadius="10">
+                                    Background="{DynamicResource SurfaceStrong}" CornerRadius="10">
                               <TextBlock Text="{Binding StateText}" FontSize="11"
-                                         Foreground="#AFC0D9" />
+                                         Foreground="{DynamicResource Muted}" />
                             </Border>
                           </StackPanel>
                           <TextBlock Text="{Binding Description}" Margin="0,7,0,0"
-                                     Foreground="{StaticResource Muted}" />
+                                     Foreground="{DynamicResource Muted}" />
                           <TextBlock Margin="0,9,0,0" FontSize="11"
-                                     Foreground="#718099">
+                                     Foreground="{DynamicResource Subtle}">
                             <Run Text="최신 " /><Run Text="{Binding LatestVersion}" />
                             <Run Text="  ·  태그 " /><Run Text="{Binding Tag}" />
                           </TextBlock>
@@ -173,23 +184,23 @@
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
             </ScrollViewer>
-            <Border x:Name="LoadingOverlay" Background="#D90D1119"
+            <Border x:Name="LoadingOverlay" Background="{DynamicResource Overlay}"
                     CornerRadius="12">
               <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="◌" FontSize="42" Foreground="#E24E55"
+                <TextBlock Text="◌" FontSize="42" Foreground="{DynamicResource Accent}"
                            HorizontalAlignment="Center">
                   <TextBlock.RenderTransform>
                     <RotateTransform x:Name="LoadingRotation" CenterX="21" CenterY="21" />
                   </TextBlock.RenderTransform>
                 </TextBlock>
                 <TextBlock x:Name="LoadingText" Text="제품을 찾는 중…"
-                           Margin="0,14,0,0" Foreground="#BEC7D5" />
+                           Margin="0,14,0,0" Foreground="{DynamicResource Muted}" />
               </StackPanel>
             </Border>
           </Grid>
 
           <Border Grid.Row="3" Margin="0,14,0,0" Padding="14"
-                  Background="#121925" BorderBrush="#29364A"
+                  Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Stroke}"
                   BorderThickness="1" CornerRadius="11">
             <Grid>
               <Grid.RowDefinitions>
@@ -208,7 +219,7 @@
               </Grid>
               <ProgressBar Grid.Row="1" x:Name="OverallProgress" Height="4"
                            Margin="0,8" Minimum="0" Maximum="100"
-                           Foreground="#E24E55" Background="#273248" />
+                           Foreground="{DynamicResource Accent}" Background="{DynamicResource Selection}" />
               <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="QueueList">
                   <ItemsControl.ItemTemplate>
@@ -227,7 +238,7 @@
                                    FontWeight="SemiBold"
                                    TextTrimming="CharacterEllipsis" />
                         <TextBlock Grid.Column="1" Text="{Binding StateText}"
-                                   Margin="8,0" Foreground="#AFC0D9"
+                                   Margin="8,0" Foreground="{DynamicResource Muted}"
                                    HorizontalAlignment="Center" />
                         <Button Grid.Column="2" Content="일시정지/재개"
                                 Padding="8,3" IsEnabled="{Binding CanPause}"
@@ -241,9 +252,9 @@
                                        Margin="0,0,12,0"
                                        VerticalAlignment="Center"
                                        Value="{Binding Progress}"
-                                       Foreground="#E24E55" Background="#273248" />
+                                       Foreground="{DynamicResource Accent}" Background="{DynamicResource Selection}" />
                           <TextBlock Grid.Column="1" Text="{Binding Detail}"
-                                     FontSize="10" Foreground="#9AA7BA"
+                                     FontSize="10" Foreground="{DynamicResource Muted}"
                                      TextTrimming="CharacterEllipsis"
                                      ToolTip="{Binding Detail}" />
                         </Grid>
@@ -257,14 +268,14 @@
         </Grid>
       </Grid>
 
-      <Border Grid.Row="2" Background="#111722" CornerRadius="0,0,14,14"
-              BorderBrush="#263147" BorderThickness="0,1,0,0">
+      <Border Grid.Row="2" Background="{DynamicResource Sidebar}" CornerRadius="0,0,14,14"
+              BorderBrush="{DynamicResource Stroke}" BorderThickness="0,1,0,0">
         <Grid Margin="20,0">
           <TextBlock x:Name="StatusText" Text="준비됨" VerticalAlignment="Center"
-                     Foreground="#93A0B3" />
-          <TextBlock Text="Hython Manager 1.1.0 · 트레이 실행 중"
+                     Foreground="{DynamicResource Muted}" />
+          <TextBlock Text="Hython Manager 1.1.1 · 트레이 실행 중"
                      HorizontalAlignment="Right" VerticalAlignment="Center"
-                     Foreground="#66748A" />
+                     Foreground="{DynamicResource Subtle}" />
         </Grid>
       </Border>
     </Grid>

@@ -46,6 +46,7 @@ public partial class App : System.Windows.Application
         }
         base.OnStartup(e);
         settings = ManagerSettings.Load();
+        ThemeService.Apply(settings.Theme);
         settings.Save();
         window = new MainWindow(settings);
         MainWindow = window;

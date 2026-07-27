@@ -10,15 +10,30 @@
     <SolidColorBrush x:Key="Text" Color="#F3F5F8" />
     <SolidColorBrush x:Key="Muted" Color="#94A0B2" />
     <SolidColorBrush x:Key="Accent" Color="#E24E55" />
+    <SolidColorBrush x:Key="Chrome" Color="#121824" />
+    <SolidColorBrush x:Key="Sidebar" Color="#111722" />
+    <SolidColorBrush x:Key="Surface" Color="#151E2C" />
+    <SolidColorBrush x:Key="SurfaceStrong" Color="#202B3D" />
+    <SolidColorBrush x:Key="Selection" Color="#263248" />
+    <SolidColorBrush x:Key="Subtle" Color="#718099" />
+    <SolidColorBrush x:Key="AccentStrong" Color="#C83F49" />
+    <SolidColorBrush x:Key="AccentBorder" Color="#EF6570" />
+    <SolidColorBrush x:Key="Button" Color="#202A39" />
+    <SolidColorBrush x:Key="ButtonHover" Color="#2B3850" />
+    <SolidColorBrush x:Key="ButtonBorder" Color="#334158" />
+    <SolidColorBrush x:Key="Overlay" Color="#D90D1119" />
     <Style TargetType="Window">
-      <Setter Property="Background" Value="{StaticResource Page}" />
-      <Setter Property="Foreground" Value="{StaticResource Text}" />
+      <Setter Property="Background" Value="{DynamicResource Page}" />
+      <Setter Property="Foreground" Value="{DynamicResource Text}" />
       <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI" />
     </Style>
+    <Style TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource Text}" />
+    </Style>
     <Style TargetType="Button">
-      <Setter Property="Foreground" Value="{StaticResource Text}" />
-      <Setter Property="Background" Value="#202A39" />
-      <Setter Property="BorderBrush" Value="#334158" />
+      <Setter Property="Foreground" Value="{DynamicResource Text}" />
+      <Setter Property="Background" Value="{DynamicResource Button}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
       <Setter Property="Padding" Value="16,9" />
       <Setter Property="Margin" Value="4" />
       <Setter Property="Cursor" Value="Hand" />
@@ -33,8 +48,10 @@
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="Surface" Property="Background" Value="#2B3850" />
-                <Setter TargetName="Surface" Property="BorderBrush" Value="#546681" />
+                <Setter TargetName="Surface" Property="Background"
+                        Value="{DynamicResource ButtonHover}" />
+                <Setter TargetName="Surface" Property="BorderBrush"
+                        Value="{DynamicResource AccentBorder}" />
               </Trigger>
               <Trigger Property="IsPressed" Value="True">
                 <Setter TargetName="Surface" Property="Opacity" Value="0.72" />
@@ -48,14 +65,46 @@
       </Setter>
     </Style>
     <Style TargetType="CheckBox">
-      <Setter Property="Foreground" Value="{StaticResource Text}" />
+      <Setter Property="Foreground" Value="{DynamicResource Text}" />
       <Setter Property="Cursor" Value="Hand" />
       <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
+    <Style TargetType="ComboBox">
+      <Setter Property="Foreground" Value="{DynamicResource Text}" />
+      <Setter Property="Background" Value="{DynamicResource Button}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
+    </Style>
+    <Style TargetType="ComboBoxItem">
+      <Setter Property="Foreground" Value="{DynamicResource Text}" />
+      <Setter Property="Background" Value="{DynamicResource Panel}" />
+      <Setter Property="Padding" Value="8,5" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ComboBoxItem">
+            <Border x:Name="ItemSurface"
+                    Background="{TemplateBinding Background}"
+                    Padding="{TemplateBinding Padding}">
+              <ContentPresenter />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsHighlighted" Value="True">
+                <Setter TargetName="ItemSurface" Property="Background"
+                        Value="{DynamicResource Accent}" />
+                <Setter Property="Foreground" Value="White" />
+              </Trigger>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="ItemSurface" Property="Background"
+                        Value="{DynamicResource Selection}" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
     <Style x:Key="PrimaryButton" TargetType="Button"
            BasedOn="{StaticResource {x:Type Button}}">
-      <Setter Property="Background" Value="#C83F49" />
-      <Setter Property="BorderBrush" Value="#EF6570" />
+      <Setter Property="Background" Value="{DynamicResource AccentStrong}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentBorder}" />
     </Style>
   </Application.Resources>
 </Application>

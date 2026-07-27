@@ -18,7 +18,7 @@ class ManagerContractTests(unittest.TestCase):
         self.assertIn("NotifyIcon", app)
         self.assertIn("Global\\Kooyoseb.Hython.Manager", app)
         self.assertIn("PublishSingleFile=true", build)
-        self.assertIn("<Version>1.1.0</Version>", project)
+        self.assertIn("<Version>1.1.1</Version>", project)
 
     def test_catalog_recognizes_products_without_mixing_release_tags(self):
         source = self.text(
@@ -100,10 +100,10 @@ class ManagerContractTests(unittest.TestCase):
             "MajorUpgrade",
             "ManagerStartMenu",
             "ManagerDesktopFeature",
-            'Title="Hython Manager 1.1.0"',
+            'Title="Hython Manager 1.1.1"',
         ):
             self.assertIn(marker, wix)
-        self.assertIn('VERSION = "1.1.0"', builder)
+        self.assertIn('VERSION = "1.1.1"', builder)
         self.assertIn("HythonManager-{VERSION}-x64.msi", builder)
         self.assertIn("removeOnUninstall", wix)
 
@@ -156,6 +156,18 @@ class ManagerContractTests(unittest.TestCase):
         self.assertIn("trayProgressItem", app)
         for marker in ("QueueList", "OverallProgress", "일시정지", "작업 기록 열기"):
             self.assertIn(marker, xaml)
+
+    def test_manager_supports_persistent_dark_and_blue_light_themes(self):
+        theme = self.text("manager/HythonManager/Services/ThemeService.cs")
+        settings = self.text("manager/HythonManager/Services/ManagerSettings.cs")
+        xaml = self.text("manager/HythonManager/MainWindow.xaml")
+        app = self.text("manager/HythonManager/App.xaml")
+        for marker in ("Dark", "Light", "#1677D2", "#F5F8FC", "#0D1119"):
+            self.assertIn(marker, theme)
+        self.assertIn('key.SetValue("Theme", Theme', settings)
+        self.assertIn("ThemeRadio_Checked", xaml)
+        self.assertIn("화이트 모드 · 파란색", xaml)
+        self.assertIn("DynamicResource Accent", app)
 
 
 if __name__ == "__main__":

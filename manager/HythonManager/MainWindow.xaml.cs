@@ -40,6 +40,10 @@ public partial class MainWindow : Window
         });
         StartWithWindowsCheck.IsChecked = settings.StartWithWindows;
         BackgroundChecksCheck.IsChecked = settings.BackgroundChecks;
+        if (settings.Theme == ThemeService.Light)
+            ThemeLightRadio.IsChecked = true;
+        else
+            ThemeDarkRadio.IsChecked = true;
         settingsLoaded = true;
         Loaded += async (_, _) =>
         {
@@ -230,6 +234,19 @@ public partial class MainWindow : Window
     {
         if (!settingsLoaded) return;
         StatusText.Text = "저장되지 않은 설정";
+    }
+    private void ThemeRadio_Checked(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement item ||
+            item.Tag is not string theme) return;
+        ThemeService.Apply(theme);
+        settings.Theme = theme;
+        if (settingsLoaded)
+        {
+            settings.Save();
+            StatusText.Text = theme == ThemeService.Light
+                ? "화이트 모드 적용 완료" : "다크 모드 적용 완료";
+        }
     }
     private void SaveSettings_Click(object sender, RoutedEventArgs e)
     {
