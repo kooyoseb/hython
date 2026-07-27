@@ -12,7 +12,7 @@ class StudioContractTests(unittest.TestCase):
     def test_studio_release_surface_is_complete(self):
         xaml = self.text("studio/HythonStudio/MainWindow.xaml")
         for marker in (
-            "Hython Studio 1.0.0", "ProjectTree", "SearchResultsList",
+            "Hython Studio 1.0.1", "ProjectTree", "SearchResultsList",
             "DebugVariables", "TerminalInput", "PackageSpecInput",
             "ProblemsList", "SymbolsList",
         ):
@@ -41,6 +41,15 @@ class StudioContractTests(unittest.TestCase):
         self.assertIn('Package Name="Hython Studio"', wix)
         self.assertIn("E34AC48E-E305-48F2-AC51-24FBE48FB3B2", wix)
         self.assertIn("StudioDesktopFeature", wix)
+
+    def test_start_page_uses_embedded_hython_icon(self):
+        project = self.text("studio/HythonStudio/HythonStudio.csproj")
+        xaml = self.text("studio/HythonStudio/MainWindow.xaml")
+        self.assertIn('Link="Resources\\hython-icon.png"', project)
+        self.assertIn(
+            'Source="/HythonStudio;component/Resources/hython-icon.png"',
+            xaml,
+        )
 
     def test_no_unfinished_ui_placeholders_remain(self):
         source = "\n".join(

@@ -2,7 +2,7 @@
 
 Hython Studio는 C#과 WPF로 개발하는 Hython 전용 Windows IDE입니다.
 
-Hython Studio 1.0에 포함된 기능:
+Hython Studio 1.0.1에 포함된 기능:
 
 - VS Code와 IntelliJ 계열을 조합한 다중 패널 UI
 - 프로젝트 폴더 및 파일 탐색기
@@ -39,5 +39,5 @@ build-studio-installer.bat
 출력:
 
 ```text
-release\HythonStudio-1.0.0-x64.msi
+release\HythonStudio-1.0.1-x64.msi
 ```

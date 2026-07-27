@@ -34,7 +34,7 @@
           <TextBlock Text="Hython Studio" Margin="9,0,0,0"
                      FontWeight="SemiBold" VerticalAlignment="Center" />
           <Border Margin="10,0,0,0" Padding="7,2" CornerRadius="8" Background="#292C32">
-            <TextBlock Text="1.0" Foreground="#AAB0BA" FontSize="11" />
+            <TextBlock Text="1.0.1" Foreground="#AAB0BA" FontSize="11" />
           </Border>
         </StackPanel>
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
@@ -116,7 +116,7 @@
       </StatusBarItem>
       <Separator />
       <StatusBarItem HorizontalAlignment="Right">
-        <TextBlock Text="Hython Studio 1.0.0 · HBC VM IDE" />
+        <TextBlock Text="Hython Studio 1.0.1 · HBC VM IDE" />
       </StatusBarItem>
     </StatusBar>
 
@@ -242,11 +242,11 @@
           <TabItem Header="시작">
             <Grid Background="#17191E">
               <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border Width="66" Height="66" CornerRadius="18" Background="#A93434"
-                        HorizontalAlignment="Center" Margin="0,0,0,18">
-                  <TextBlock Text="ㅎ" FontSize="38" FontWeight="Bold" Foreground="White"
-                             HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Border>
+                <Image Width="82" Height="82" Margin="0,0,0,18"
+                       HorizontalAlignment="Center"
+                       Source="/HythonStudio;component/Resources/hython-icon.png"
+                       Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"
+                       ToolTip="Hython" />
                 <TextBlock Text="Hython Studio" FontSize="34" FontWeight="SemiBold"
                            Foreground="#E05454" HorizontalAlignment="Center" />
                 <TextBlock Text="한글 프로그래밍을 위한 독립 개발 환경"

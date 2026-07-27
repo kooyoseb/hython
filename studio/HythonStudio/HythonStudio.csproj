@@ -8,12 +8,14 @@
     <ApplicationIcon>..\..\assets\hython.ico</ApplicationIcon>
     <AssemblyName>HythonStudio</AssemblyName>
     <RootNamespace>HythonStudio</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Product>Hython Studio</Product>
     <Company>Kooyoseb</Company>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
     <EmbeddedResource Include="Resources\Hython.xshd" />
+    <Resource Include="..\..\assets\hython-icon.png"
+              Link="Resources\hython-icon.png" />
   </ItemGroup>
 </Project>
