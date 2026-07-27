@@ -1,0 +1,43 @@
+<Application x:Class="HythonManagerSetup.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Application.Resources>
+    <Style TargetType="Button">
+      <Setter Property="Foreground" Value="#F7F8FA" />
+      <Setter Property="Background" Value="#263247" />
+      <Setter Property="BorderBrush" Value="#3D4C65" />
+      <Setter Property="Padding" Value="19,10" />
+      <Setter Property="Margin" Value="5" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Surface" CornerRadius="8"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="1" Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Surface" Property="Background" Value="#34445F" />
+                <Setter TargetName="Surface" Property="BorderBrush" Value="#687B99" />
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Surface" Property="Opacity" Value="0.7" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.4" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="Primary" TargetType="Button"
+           BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Background" Value="#CE414B" />
+      <Setter Property="BorderBrush" Value="#F0646D" />
+    </Style>
+  </Application.Resources>
+</Application>

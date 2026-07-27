@@ -1,10 +1,17 @@
 release/*.log
+manager-*-test.log
 studio/HythonStudio/bin/
 studio/HythonStudio/obj/
 studio/release/*.pdb
 studio/release/HythonStudio.exe
 studio/release-fixed/
 studio/release-fixed2/
+manager/HythonManager/bin/
+manager/HythonManager/obj/
+manager/HythonManagerSetup/bin/
+manager/HythonManagerSetup/obj/
+manager/release/
+manager/setup-release/
 **/__pycache__/
 *.pyc
 vscode-extension/node_modules/

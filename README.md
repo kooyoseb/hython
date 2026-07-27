@@ -41,6 +41,22 @@ Windows 설치본에는 트레이 업데이터가 함께 포함됩니다. 로그
 `언어 / Language` 메뉴에서는 한국어와 영어를 선택할 수 있으며 선택값은 사용자별로
 저장됩니다.
 
+## Hython Manager
+
+Hython Manager는 Hython 생태계 전체를 설치하고 업데이트하며 제거할 수 있는
+Windows 트레이 관리 앱입니다. GitHub에 게시된 릴리스 태그와 설치 자산을 분석하여
+Hython, Hython Studio, Hython Development for VS Code, Manager 자체와 이후 추가되는
+제품을 자동으로 카탈로그에 등록합니다.
+
+```console
+build-manager-installer.bat
+```
+
+생성되는 `HythonManager-1.0.0-x64.msi`는 사용자 단위로 설치되므로 Manager 설치
+자체에는 관리자 권한이 필요하지 않습니다. Manager가 시스템 범위 MSI 제품을
+설치할 때만 Windows가 관리자 권한을 요청합니다. VS Code 확장은 `code` 명령으로
+감지·설치·업데이트·제거합니다.
+
 ## 첫 실행
 
 `안녕.hy` 파일을 만듭니다.
