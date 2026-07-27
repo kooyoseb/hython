@@ -1,0 +1,251 @@
+{
+  "name": "hython-development",
+  "displayName": "Hython Development",
+  "description": "Hython 언어 지원: 문법 강조, 한글 진단, 자동완성, 실행과 빌드",
+  "version": "1.0.0",
+  "publisher": "kooyoseb",
+  "icon": "images/hython-icon.png",
+  "galleryBanner": {
+    "color": "#17191e",
+    "theme": "dark"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kooyoseb/hython.git",
+    "directory": "vscode-extension"
+  },
+  "homepage": "https://github.com/kooyoseb/hython#readme",
+  "bugs": {
+    "url": "https://github.com/kooyoseb/hython/issues"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Debuggers"
+  ],
+  "keywords": [
+    "hython",
+    "hangul",
+    "korean",
+    "python",
+    "한글"
+  ],
+  "activationEvents": [
+    "onLanguage:hython",
+    "onCommand:hython.runFile",
+    "onCommand:hython.compileFile",
+    "onCommand:hython.buildExe",
+    "onCommand:hython.selectEngine",
+    "onDebug:hython"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "hython",
+        "aliases": [
+          "Hython",
+          "하이썬"
+        ],
+        "extensions": [
+          ".hy"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "hython",
+        "scopeName": "source.hython",
+        "path": "./syntaxes/hython.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "hython",
+        "path": "./snippets/hython.json"
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "hython"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "hython",
+        "label": "Hython",
+        "languages": [
+          "hython"
+        ],
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "디버깅할 Hython 소스 파일",
+                "default": "${file}"
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "hython",
+            "request": "launch",
+            "name": "현재 Hython 파일",
+            "program": "${file}"
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "Hython: 현재 파일 디버그",
+            "description": "현재 Hython 소스 파일을 HBC VM 디버거로 실행합니다.",
+            "body": {
+              "type": "hython",
+              "request": "launch",
+              "name": "현재 Hython 파일",
+              "program": "${file}"
+            }
+          }
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "hython.runFile",
+        "title": "Hython: 현재 파일 실행",
+        "icon": "$(play)"
+      },
+      {
+        "command": "hython.compileFile",
+        "title": "Hython: HBC 컴파일",
+        "icon": "$(package)"
+      },
+      {
+        "command": "hython.buildExe",
+        "title": "Hython: EXE 빌드",
+        "icon": "$(desktop-download)"
+      },
+      {
+        "command": "hython.debugFile",
+        "title": "Hython: 현재 파일 디버그",
+        "icon": "$(debug-alt)"
+      },
+      {
+        "command": "hython.analyzeFile",
+        "title": "Hython: 현재 파일 다시 분석"
+      },
+      {
+        "command": "hython.selectEngine",
+        "title": "Hython: 엔진 경로 선택"
+      },
+      {
+        "command": "hython.openTerminal",
+        "title": "Hython: 터미널 열기"
+      },
+      {
+        "command": "hython.newProject",
+        "title": "Hython: 새 프로젝트 만들기"
+      },
+      {
+        "command": "hython.installPackage",
+        "title": "Hython: 패키지 설치"
+      },
+      {
+        "command": "hython.updateEngine",
+        "title": "Hython: 엔진과 문법 업데이트"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "hython.runFile",
+          "when": "resourceLangId == hython",
+          "group": "navigation@1"
+        },
+        {
+          "command": "hython.compileFile",
+          "when": "resourceLangId == hython",
+          "group": "navigation@2"
+        },
+        {
+          "command": "hython.debugFile",
+          "when": "resourceLangId == hython",
+          "group": "navigation@3"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "hython.runFile",
+          "when": "resourceLangId == hython",
+          "group": "hython@1"
+        },
+        {
+          "command": "hython.compileFile",
+          "when": "resourceLangId == hython",
+          "group": "hython@2"
+        },
+        {
+          "command": "hython.buildExe",
+          "when": "resourceLangId == hython",
+          "group": "hython@3"
+        },
+        {
+          "command": "hython.debugFile",
+          "when": "resourceLangId == hython",
+          "group": "hython@4"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Hython",
+      "properties": {
+        "hython.executablePath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine-overridable",
+          "description": "hython.exe의 절대 경로입니다. 비워 두면 PATH와 저장소 release 폴더에서 자동 탐색합니다."
+        },
+        "hython.analysis.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Hython 엔진 기반 한글 진단, 자동완성과 코드 심볼을 사용합니다."
+        },
+        "hython.analysis.delay": {
+          "type": "number",
+          "default": 350,
+          "minimum": 100,
+          "maximum": 3000,
+          "description": "입력 후 진단을 시작할 때까지 기다리는 시간(밀리초)입니다."
+        },
+        "hython.run.saveBeforeRun": {
+          "type": "boolean",
+          "default": true,
+          "description": "실행이나 컴파일 전에 현재 파일을 저장합니다."
+        },
+        "hython.codeLens.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Hython 파일 위에 실행과 디버그 CodeLens를 표시합니다."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "check": "node --check extension.js && node --check debugAdapter.js",
+    "test:integration": "node ./test/runTest.js",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^3.6.0"
+  }
+}

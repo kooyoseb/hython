@@ -1,0 +1,96 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Hython",
+  "scopeName": "source.hython",
+  "patterns": [
+    {"include": "#comments"},
+    {"include": "#strings"},
+    {"include": "#numbers"},
+    {"include": "#decorators"},
+    {"include": "#definitions"},
+    {"include": "#keywords"},
+    {"include": "#builtins"},
+    {"include": "#specials"},
+    {"include": "#operators"}
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.hython",
+          "begin": "#",
+          "beginCaptures": {"0": {"name": "punctuation.definition.comment.hython"}},
+          "end": "$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.multi.hython",
+          "begin": "(?i)(?:[rubf]{0,3})(\"\"\"|''')",
+          "beginCaptures": {"1": {"name": "punctuation.definition.string.begin.hython"}},
+          "end": "\\1",
+          "endCaptures": {"0": {"name": "punctuation.definition.string.end.hython"}},
+          "patterns": [{"include": "#escapes"}]
+        },
+        {
+          "name": "string.quoted.single.hython",
+          "begin": "(?i)(?:[rubf]{0,3})(['\"])",
+          "beginCaptures": {"1": {"name": "punctuation.definition.string.begin.hython"}},
+          "end": "(?<!\\\\)\\1",
+          "endCaptures": {"0": {"name": "punctuation.definition.string.end.hython"}},
+          "patterns": [{"include": "#escapes"}]
+        }
+      ]
+    },
+    "escapes": {
+      "patterns": [
+        {"name": "constant.character.escape.hython", "match": "\\\\(?:[abfnrtv\\\\'\"0-7]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8}|N\\{[^}]+\\})"}
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {"name": "constant.numeric.hython", "match": "(?x)\\b(?:0[xX][0-9A-Fa-f](?:_?[0-9A-Fa-f])*|0[bB][01](?:_?[01])*|0[oO][0-7](?:_?[0-7])*|(?:\\d(?:_?\\d)*)?(?:\\.\\d(?:_?\\d)*)?(?:[eE][+-]?\\d(?:_?\\d)*)?[jJ]?)\\b"}
+      ]
+    },
+    "decorators": {
+      "patterns": [
+        {"name": "meta.function.decorator.hython", "match": "(?<=^|\\s)@[\\w가-힣.]+"}
+      ]
+    },
+    "definitions": {
+      "patterns": [
+        {
+          "match": "\\b(데프|클래스)\\s+([\\w가-힣]+)",
+          "captures": {
+            "1": {"name": "storage.type.hython"},
+            "2": {"name": "entity.name.type.hython"}
+          }
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {"name": "keyword.control.hython", "match": "\\b(?:앤드|애즈|어설트|어싱크|어웨이트|브레이크|케이스|클래스|컨티뉴|데프|델|엘리프|엘스|익셉트|파이널리|포|프롬|글로벌|이프|인폴트|임포트|인|이즈|람다|매치|논로컬|낫|오어|패스|레이즈|리턴|트라이|와일|위드|일드|타입)\\b"},
+        {"name": "constant.language.hython", "match": "\\b(?:트루|폴스|넌|널|낫임플리멘티드)\\b"}
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {"name": "support.function.builtin.hython", "match": "\\b(?:프린트|인풋|렌|레인지|스트링|인트|플로트|불|리스트|딕트|셋|튜플|오픈|이뉴머레이트|집|맵|필터|썸|민|맥스|앱스|라운드|소티드|리버스드|수퍼|오브젝트|프로퍼티|스태틱메서드|클래스메서드|이즈인스턴스|이즈서브클래스|겟애트리뷰트|셋애트리뷰트|해즈애트리뷰트|넥스트|애니|올|이터|디어|헬프)\\b"}
+      ]
+    },
+    "specials": {
+      "patterns": [
+        {"name": "variable.language.special.hython", "match": "\\b__[\\w가-힣]+__\\b"},
+        {"name": "support.type.exception.hython", "match": "\\b[\\w가-힣]*에러\\b"}
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {"name": "keyword.operator.hython", "match": "(?:\\*\\*|//|<<|>>|:=|==|!=|<=|>=|->|[-+*/%@&|^~<>]=?)"}
+      ]
+    }
+  }
+}

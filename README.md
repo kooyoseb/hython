@@ -298,6 +298,22 @@ studio\release\HythonStudio.exe
 - `.hbc` → `Hython EXE로 빌드`
 - `.py` → `완전 하이썬(.hy)으로 변환`
 
+## Hython Development for VS Code
+
+`Hython Development` 확장은 Hython Studio의 핵심 언어 기능을 VS Code에서
+사용할 수 있게 합니다.
+
+- `.hy` 문법 강조와 Hython 엔진 기반 한글 진단·자동완성
+- 정의 이동, 모든 참조, 이름 변경, 호버와 코드 구조
+- 실행, HBC 컴파일, EXE 빌드와 패키지·업데이트 명령
+- F5 디버깅, 중단점, 단계 실행과 지역 변수
+- 새 Hython 프로젝트와 VS Code 실행·디버그 설정 생성
+
+```console
+build-vscode-extension.bat
+code --install-extension vscode-extension\hython-development-1.0.0.vsix
+```
+
 ## 소스에서 개발
 
 저장소를 받은 뒤 개발 모드로 설치합니다.
