@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<SyntaxDefinition name="Hython" extensions=".hy"
+ xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment" foreground="#6A9955" fontStyle="italic" />
+  <Color name="String" foreground="#CE9178" />
+  <Color name="Number" foreground="#B5CEA8" />
+  <Color name="Keyword" foreground="#E87979" fontWeight="bold" />
+  <Color name="Builtin" foreground="#4EC9B0" />
+  <Color name="Definition" foreground="#DCDCAA" />
+  <Color name="Decorator" foreground="#C586C0" />
+  <RuleSet>
+    <Span color="Comment" begin="#" />
+    <Span color="String" multiline="true" begin="&quot;&quot;&quot;" end="&quot;&quot;&quot;" />
+    <Span color="String" multiline="true" begin="'''" end="'''" />
+    <Span color="String" begin="&quot;" end="&quot;">
+      <RuleSet>
+        <Span begin="\\" end="." />
+      </RuleSet>
+    </Span>
+    <Span color="String" begin="'" end="'">
+      <RuleSet>
+        <Span begin="\\" end="." />
+      </RuleSet>
+    </Span>
+    <Rule color="Number">\b(0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|\d[\d_]*(\.\d[\d_]*)?)\b</Rule>
+    <Rule color="Decorator">@[가-힣A-Za-z_][가-힣A-Za-z0-9_\.]*</Rule>
+    <Rule color="Definition">(?&lt;=\b(데프|클래스|타입)\s+)[가-힣A-Za-z_][가-힣A-Za-z0-9_]*</Rule>
+    <Keywords color="Keyword">
+      <Word>폴스</Word><Word>넌</Word><Word>트루</Word><Word>앤드</Word>
+      <Word>애즈</Word><Word>어설트</Word><Word>어싱크</Word><Word>어웨이트</Word>
+      <Word>브레이크</Word><Word>클래스</Word><Word>컨티뉴</Word><Word>데프</Word>
+      <Word>델</Word><Word>엘리프</Word><Word>엘스</Word><Word>익셉트</Word>
+      <Word>파이널리</Word><Word>포</Word><Word>프롬</Word><Word>글로벌</Word>
+      <Word>이프</Word><Word>인폴트</Word><Word>인</Word><Word>이즈</Word>
+      <Word>람다</Word><Word>논로컬</Word><Word>낫</Word><Word>오어</Word>
+      <Word>패스</Word><Word>레이즈</Word><Word>리턴</Word><Word>트라이</Word>
+      <Word>와일</Word><Word>위드</Word><Word>일드</Word><Word>매치</Word>
+      <Word>케이스</Word><Word>타입</Word>
+    </Keywords>
+    <Keywords color="Builtin">
+      <Word>프린트</Word><Word>인풋</Word><Word>렌</Word><Word>레인지</Word>
+      <Word>스트링</Word><Word>인트</Word><Word>플로트</Word><Word>불</Word>
+      <Word>리스트</Word><Word>딕트</Word><Word>셋</Word><Word>튜플</Word>
+      <Word>오픈</Word><Word>이뉴머레이트</Word><Word>집</Word><Word>썸</Word>
+      <Word>민</Word><Word>맥스</Word><Word>앱스</Word><Word>소티드</Word>
+    </Keywords>
+  </RuleSet>
+</SyntaxDefinition>

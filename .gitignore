@@ -1,1 +1,9 @@
 release/*.log
+studio/HythonStudio/bin/
+studio/HythonStudio/obj/
+studio/release/*.pdb
+studio/release/HythonStudio.exe
+studio/release-fixed/
+studio/release-fixed2/
+**/__pycache__/
+*.pyc

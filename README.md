@@ -274,6 +274,30 @@ hython 실행파일 프로그램.hbc -o 프로그램.exe
 hython 실행파일 프로그램.hbc -o 프로그램.exe --windowed --icon app.ico
 ```
 
+## Hython Studio
+
+Hython Studio 1.0은 Hython 엔진이 직접 분석하는 Windows 통합 개발 환경입니다.
+
+- `.hy` 문법 강조, 코드 접기, 괄호 강조와 자동완성
+- 저장 전 소스까지 분석하는 한글 진단과 코드 구조
+- HBC VM 기반 중단점, 한 단계 실행, 변수 및 출력 디버거
+- 실행, HBC 컴파일, EXE 빌드와 메타데이터 설정
+- 패키지 설치·업데이트·제거와 한글 API 사전 자동 생성
+- 프로젝트 전체 검색, 파일·폴더 생성·이름 변경·삭제
+- PowerShell 내장 터미널
+- PyPI, GitHub MSI, Winget 기반 Hython 설치 및 업데이트
+- Python에서 완전 하이썬 변환과 HBC 독립 EXE 빌드
+
+```console
+build-studio.bat
+studio\release\HythonStudio.exe
+```
+
+통합 MSI를 설치하면 `.hy` 파일 연결과 다음 Windows 탐색기 메뉴가 등록됩니다.
+
+- `.hbc` → `Hython EXE로 빌드`
+- `.py` → `완전 하이썬(.hy)으로 변환`
+
 ## 소스에서 개발
 
 저장소를 받은 뒤 개발 모드로 설치합니다.

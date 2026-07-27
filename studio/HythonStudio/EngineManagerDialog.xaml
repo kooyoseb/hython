@@ -1,0 +1,101 @@
+<Window x:Class="HythonStudio.EngineManagerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hython 설치 및 업데이트" Width="650" Height="560"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        Background="#202329" Foreground="#E7E9ED">
+  <Grid Margin="26">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" /><RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <StackPanel>
+      <TextBlock Text="Hython 엔진 관리" FontSize="25" FontWeight="SemiBold"
+                 Foreground="#EA5B5B" />
+      <TextBlock Text="설치 환경을 확인하고 원하는 배포 경로로 설치하거나 업데이트합니다."
+                 Foreground="#9AA0AA" Margin="0,6,0,18" />
+    </StackPanel>
+    <Border Grid.Row="1" Background="#181A1F" BorderBrush="#3D424B"
+            BorderThickness="1" CornerRadius="6" Padding="14">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" /><ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+          <TextBlock Text="Python / PyPI" FontWeight="SemiBold" />
+          <TextBlock x:Name="PythonStatus" Text="확인 중…" Foreground="#AAB0BA"
+                     Margin="0,5,0,0" />
+          <TextBlock x:Name="PipStatus" Foreground="#AAB0BA" />
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+          <TextBlock Text="Windows 설치 환경" FontWeight="SemiBold" />
+          <TextBlock x:Name="WingetStatus" Text="확인 중…" Foreground="#AAB0BA"
+                     Margin="0,5,0,0" />
+          <TextBlock x:Name="MsiStatus" Foreground="#AAB0BA" />
+        </StackPanel>
+      </Grid>
+    </Border>
+    <StackPanel Grid.Row="2" Margin="0,18,0,12">
+      <TextBlock Text="설치·업데이트 방식" Foreground="#AAB0BA" />
+      <ComboBox x:Name="SourceBox" SelectedIndex="2" Margin="0,6,0,8"
+                Background="#E8EDF3" Foreground="#202329" Padding="7">
+        <ComboBox.Resources>
+          <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="#F2F4F7" />
+            <Setter Property="Foreground" Value="#000000" />
+            <Setter Property="Padding" Value="9,6" />
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                  <Border x:Name="ItemBorder"
+                          Background="{TemplateBinding Background}"
+                          Padding="{TemplateBinding Padding}">
+                    <ContentPresenter />
+                  </Border>
+                  <ControlTemplate.Triggers>
+                    <Trigger Property="IsHighlighted" Value="True">
+                      <Setter TargetName="ItemBorder" Property="Background"
+                              Value="#C9D9EA" />
+                      <Setter Property="Foreground" Value="#000000" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                      <Setter TargetName="ItemBorder" Property="Background"
+                              Value="#B8CCE2" />
+                      <Setter Property="Foreground" Value="#000000" />
+                    </Trigger>
+                  </ControlTemplate.Triggers>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+        </ComboBox.Resources>
+        <ComboBoxItem Content="Python · PyPI (pip)" Tag="Pip"
+                      Foreground="Black" />
+        <ComboBoxItem Content="GitHub 최신 MSI" Tag="GitHub"
+                      Foreground="Black" />
+        <ComboBoxItem Content="Windows Package Manager (Winget)" Tag="Winget"
+                      Foreground="Black" />
+      </ComboBox>
+      <CheckBox x:Name="SkipWingetCheck"
+                Content="Winget 실행 전 winstall.app 등록 확인 건너뛰기"
+                Foreground="#C8CCD3" Margin="2,4" />
+    </StackPanel>
+    <TextBox x:Name="LogBox" Grid.Row="3" IsReadOnly="True"
+             Background="#111317" Foreground="#D7DAE0" BorderBrush="#3D424B"
+             FontFamily="Cascadia Mono,Consolas" TextWrapping="Wrap"
+             VerticalScrollBarVisibility="Auto" Padding="10" />
+    <DockPanel Grid.Row="4" Margin="0,14,0,0">
+      <ProgressBar x:Name="Progress" Height="3" IsIndeterminate="True"
+                   Visibility="Collapsed" Foreground="#D44C4C" />
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+        <Button Content="환경 다시 확인" Click="Detect_Click" />
+        <Button x:Name="InstallButton" Content="설치" Click="Install_Click" />
+        <Button x:Name="UpdateButton" Content="업데이트"
+                Style="{StaticResource PrimaryButton}" Click="Update_Click" />
+        <Button x:Name="RemoveButton" Content="제거" Click="Remove_Click" />
+        <Button Content="닫기" IsCancel="True" />
+      </StackPanel>
+    </DockPanel>
+  </Grid>
+</Window>

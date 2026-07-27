@@ -18,8 +18,10 @@ def main():
     if not wix: raise SystemExit("WiX가 없습니다: dotnet tool install --global wix")
     executable=ROOT/"release"/"hython.exe"
     updater=ROOT/"release"/"HythonUpdater.exe"
+    studio=ROOT/"studio"/"release"/"HythonStudio.exe"
     if not executable.is_file(): raise SystemExit("먼저 build-hython.bat을 실행하세요.")
     if not updater.is_file(): raise SystemExit("먼저 build-updater.bat을 실행하세요.")
+    if not studio.is_file(): raise SystemExit("먼저 build-studio.bat을 실행하세요.")
     version_check=subprocess.run(
         [str(executable), "--version"],
         capture_output=True,
@@ -40,6 +42,7 @@ def main():
     command=[wix,"build",str(ROOT/"installer"/"hython.wxs"),"-arch","x64",
              "-d",f"HythonExe={executable.resolve()}","-d",f"MsiVersion={msi_version}",
              "-d",f"HythonUpdaterExe={updater.resolve()}",
+             "-d",f"HythonStudioExe={studio.resolve()}",
              "-d",f"LicenseRtf={(ROOT/'installer'/'license.rtf').resolve()}",
              "-d",f"HythonIcon={(ROOT/'assets'/'hython.ico').resolve()}",
              "-ext","WixToolset.UI.wixext",

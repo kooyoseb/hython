@@ -2,7 +2,7 @@
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
   <Package Name="Hython" Manufacturer="Kooyoseb"
            Version="$(MsiVersion)" UpgradeCode="{18C655B5-BC7D-4C88-80B3-7F4802E8E5FA}"
-           Scope="perMachine" Compressed="yes">
+           Scope="perMachine" Compressed="yes" Codepage="65001">
     <MajorUpgrade DowngradeErrorMessage="A newer Hython version is already installed." />
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/kooyoseb/hython" />
@@ -24,6 +24,35 @@
                          Name="Hython Updater" Type="string"
                          Value="&quot;[INSTALLFOLDER]HythonUpdater.exe&quot;" />
         </Component>
+        <Component Id="HythonStudioComponent" Guid="*">
+          <File Id="HythonStudioExe" Source="$(HythonStudioExe)" KeyPath="yes" />
+        </Component>
+        <Component Id="HythonFileAssociations" Guid="*">
+          <RegistryValue Root="HKLM" Key="Software\Classes\.hy"
+                         Type="string" Value="Hython.Source" KeyPath="yes" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Source"
+                         Type="string" Value="Hython 소스 파일" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Source\DefaultIcon"
+                         Type="string" Value="[INSTALLFOLDER]HythonStudio.exe,0" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Source\shell\open\command"
+                         Type="string" Value="&quot;[INSTALLFOLDER]HythonStudio.exe&quot; &quot;%1&quot;" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\.hbc"
+                         Type="string" Value="Hython.Bytecode" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode"
+                         Type="string" Value="Hython 바이트코드" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode\DefaultIcon"
+                         Type="string" Value="[INSTALLFOLDER]HythonStudio.exe,0" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode\shell\open\command"
+                         Type="string" Value="&quot;[INSTALLFOLDER]HythonStudio.exe&quot; &quot;%1&quot;" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode\shell\build"
+                         Type="string" Value="Hython EXE로 빌드" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode\shell\build\command"
+                         Type="string" Value="&quot;[INSTALLFOLDER]HythonStudio.exe&quot; --build-hbc &quot;%1&quot;" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\SystemFileAssociations\.py\shell\HythonConvert"
+                         Type="string" Value="완전 하이썬(.hy)으로 변환" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\SystemFileAssociations\.py\shell\HythonConvert\command"
+                         Type="string" Value="&quot;[INSTALLFOLDER]HythonStudio.exe&quot; --convert-python &quot;%1&quot;" />
+        </Component>
         <Component Id="HythonPathComponent" Guid="*">
           <Environment Id="HythonPath" Name="PATH" Value="[INSTALLFOLDER]" Action="set"
                        Part="last" System="yes" Permanent="no" />
@@ -42,6 +71,14 @@
         <RegistryValue Root="HKLM" Key="Software\Kooyoseb\Hython"
                        Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
       </Component>
+      <Component Id="HythonStudioStartMenuComponent" Guid="*">
+        <Shortcut Id="HythonStudioStartMenu" Name="Hython Studio"
+                  Description="Hython 통합 개발 환경"
+                  Target="[INSTALLFOLDER]HythonStudio.exe"
+                  WorkingDirectory="INSTALLFOLDER" Icon="HythonIcon" />
+        <RegistryValue Root="HKLM" Key="Software\Kooyoseb\Hython"
+                       Name="StudioShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
     </StandardDirectory>
 
     <StandardDirectory Id="DesktopFolder">
@@ -59,6 +96,9 @@
              AllowAbsent="no" Display="expand">
       <ComponentRef Id="HythonExecutable" />
       <ComponentRef Id="HythonUpdaterComponent" />
+      <ComponentRef Id="HythonStudioComponent" />
+      <ComponentRef Id="HythonFileAssociations" />
+      <ComponentRef Id="HythonStudioStartMenuComponent" />
       <Feature Id="PathFeature" Title="Add Hython to the system PATH"
                Description="Run hython from Command Prompt, PowerShell, and Terminal." Level="1">
         <ComponentRef Id="HythonPathComponent" />

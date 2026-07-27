@@ -41,6 +41,7 @@ COMMAND_ALIASES = {
     "컴파일러":"compiler", "패키지":"package", "런타임":"runtime",
     "컴파일":"compile", "바이트실행":"execute", "실행파일":"exe",
     "해체":"disassemble", "빌드":"build",
+    "아이디이":"ide",
 }
 NESTED_ALIASES = {
     "정보":"info", "확인":"check", "업데이트":"update",
@@ -195,6 +196,25 @@ def build_parser() -> argparse.ArgumentParser:
     build.add_argument("source", nargs="?", type=Path, default=Path("."))
     build.add_argument("-o", "--output", type=Path, default=Path("dist"))
     build.add_argument("--no-optimize", action="store_true")
+    ide = sub.add_parser("ide", aliases=["아이디이"], help="IDE용 JSON 분석 프로토콜")
+    ide_sub = ide.add_subparsers(dest="ide_command", required=True)
+    ide_analyze = ide_sub.add_parser("analyze", help="진단·심볼·자동완성 통합 분석")
+    ide_analyze.add_argument("file", type=Path)
+    ide_analyze.add_argument("--line", type=int, default=1)
+    ide_analyze.add_argument("--column", type=int, default=0)
+    ide_analyze.add_argument("--stdin", action="store_true",
+                             help="파일 대신 표준 입력의 저장되지 않은 코드 분석")
+    ide_diagnose = ide_sub.add_parser("diagnose", help="한글 문법 진단")
+    ide_diagnose.add_argument("file", type=Path)
+    ide_symbols = ide_sub.add_parser("symbols", help="파일 코드 구조")
+    ide_symbols.add_argument("file", type=Path)
+    ide_complete = ide_sub.add_parser("complete", help="현재 위치 자동완성")
+    ide_complete.add_argument("file", type=Path)
+    ide_complete.add_argument("line", type=int)
+    ide_complete.add_argument("column", type=int)
+    ide_debug = ide_sub.add_parser("debug", help="IDE JSON 디버그 어댑터")
+    ide_debug.add_argument("file", type=Path)
+    ide_debug.add_argument("--breakpoint", action="append", type=int, default=[])
     return parser
 
 
@@ -261,6 +281,27 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if ns.command == "run":
         return _run(ns.file, ns.args)
+    if ns.command == "ide":
+        if ns.ide_command == "debug":
+            from .debug_adapter import run as run_debug_adapter
+            return run_debug_adapter(ns.file, ns.breakpoint)
+        from .ide_protocol import (
+            analyze_file, analyze_source, completions, diagnostics, emit, symbols,
+        )
+        source = sys.stdin.read() if getattr(ns, "stdin", False) else ns.file.read_text(encoding="utf-8-sig")
+        if ns.ide_command == "analyze":
+            emit(
+                analyze_source(source, str(ns.file), line=ns.line, column=ns.column)
+                if ns.stdin else
+                analyze_file(ns.file, line=ns.line, column=ns.column)
+            )
+        elif ns.ide_command == "diagnose":
+            emit({"protocolVersion": 1, "diagnostics": diagnostics(source, str(ns.file))})
+        elif ns.ide_command == "symbols":
+            emit({"protocolVersion": 1, "symbols": symbols(source, str(ns.file))})
+        else:
+            emit({"protocolVersion": 1, "completions": completions(source, ns.line, ns.column)})
+        return 0
     if ns.command == "compile":
         output = ns.output or ns.file.with_suffix(".hbc")
         output.parent.mkdir(parents=True,exist_ok=True)

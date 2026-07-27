@@ -1,0 +1,103 @@
+<Window x:Class="HythonStudio.HbcBuildDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="HBC EXE 빌드 설정" Width="900" Height="690"
+        MinWidth="760" MinHeight="580" WindowStartupLocation="CenterOwner"
+        Background="#202329" Foreground="#E7E9ED">
+  <Grid Margin="24">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <StackPanel>
+      <TextBlock Text="HBC EXE 빌드 설정" FontSize="24" FontWeight="SemiBold"
+                 Foreground="#EA5B5B" />
+      <TextBlock x:Name="SourceText" Foreground="#9AA0AA"
+                 Margin="0,5,0,16" TextTrimming="CharacterEllipsis" />
+    </StackPanel>
+
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="410" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,18,0">
+          <TextBlock Text="출력 위치" Foreground="#AAB0BA" />
+          <DockPanel Margin="0,5,0,12">
+            <Button DockPanel.Dock="Right" Content="찾기" Click="BrowseOutput_Click"
+                    Margin="7,0,0,0" />
+            <TextBox x:Name="OutputBox" Style="{StaticResource BuildTextBox}" />
+          </DockPanel>
+          <TextBlock Text="제품 이름" Foreground="#AAB0BA" />
+          <TextBox x:Name="ProductBox" Style="{StaticResource BuildTextBox}"
+                   Margin="0,5,0,12" />
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" /><ColumnDefinition Width="12" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="파일 버전" Foreground="#AAB0BA" />
+              <TextBox x:Name="VersionBox" Text="1.0.0.0"
+                       Style="{StaticResource BuildTextBox}" Margin="0,5,0,12" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="회사" Foreground="#AAB0BA" />
+              <TextBox x:Name="CompanyBox" Style="{StaticResource BuildTextBox}"
+                       Margin="0,5,0,12" />
+            </StackPanel>
+          </Grid>
+          <TextBlock Text="설명" Foreground="#AAB0BA" />
+          <TextBox x:Name="DescriptionBox" Style="{StaticResource BuildTextBox}"
+                   Margin="0,5,0,12" />
+          <TextBlock Text="저작권" Foreground="#AAB0BA" />
+          <TextBox x:Name="CopyrightBox" Style="{StaticResource BuildTextBox}"
+                   Margin="0,5,0,12" />
+          <TextBlock Text="아이콘 (.ico, 선택)" Foreground="#AAB0BA" />
+          <DockPanel Margin="0,5,0,12">
+            <Button DockPanel.Dock="Right" Content="찾기" Click="BrowseIcon_Click"
+                    Margin="7,0,0,0" />
+            <TextBox x:Name="IconBox" Style="{StaticResource BuildTextBox}" />
+          </DockPanel>
+          <CheckBox x:Name="WindowedBox" Content="GUI 앱 (콘솔 창 숨기기)"
+                    Foreground="#D7DAE0" Margin="2,4" />
+          <CheckBox x:Name="OneDirBox" Content="빠른 시작용 폴더 배포"
+                    Foreground="#D7DAE0" Margin="2,4"
+                    Checked="OneDirBox_Changed" Unchecked="OneDirBox_Changed" />
+        </StackPanel>
+      </ScrollViewer>
+
+      <Border Grid.Column="1" Background="#181A1F" BorderBrush="#3B4049"
+              BorderThickness="1" CornerRadius="6" Padding="14">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+          <TextBlock Text="HBC 분석 미리보기" FontWeight="SemiBold" FontSize="15" />
+          <TextBlock x:Name="AnalysisSummary" Grid.Row="1"
+                     Text="분석 중…" Foreground="#9AA0AA" Margin="0,7,0,10" />
+          <TextBox x:Name="DisassemblyBox" Grid.Row="2" IsReadOnly="True"
+                   Background="#111317" Foreground="#CDD1D8" BorderThickness="0"
+                   FontFamily="Cascadia Mono,Consolas" FontSize="12"
+                   Padding="9" TextWrapping="NoWrap"
+                   HorizontalScrollBarVisibility="Auto"
+                   VerticalScrollBarVisibility="Auto" />
+        </Grid>
+      </Border>
+    </Grid>
+
+    <DockPanel Grid.Row="2" Margin="0,18,0,0">
+      <TextBlock x:Name="ValidationText" Foreground="#F08080"
+                 VerticalAlignment="Center" />
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+        <Button Content="취소" Width="86" IsCancel="True" />
+        <Button Content="EXE 빌드" Width="115"
+                Style="{StaticResource PrimaryButton}" Click="Build_Click" />
+      </StackPanel>
+    </DockPanel>
+  </Grid>
+</Window>

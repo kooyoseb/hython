@@ -1,0 +1,83 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="Hython Studio" Manufacturer="Kooyoseb"
+           Version="$(StudioVersion)"
+           UpgradeCode="{E34AC48E-E305-48F2-AC51-24FBE48FB3B2}"
+           Scope="perMachine" Compressed="yes" Codepage="65001">
+    <MajorUpgrade DowngradeErrorMessage="A newer Hython Studio version is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/kooyoseb/hython" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/kooyoseb/hython/issues" />
+    <Icon Id="StudioIcon" SourceFile="$(HythonIcon)" />
+    <Property Id="ARPPRODUCTICON" Value="StudioIcon" />
+    <ui:WixUI Id="WixUI_FeatureTree" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(LicenseRtf)" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="STUDIOFOLDER" Name="Hython Studio">
+        <Component Id="StudioExecutable" Guid="*">
+          <File Id="StudioExe" Source="$(HythonStudioExe)" KeyPath="yes" />
+        </Component>
+        <Component Id="StudioFileAssociations" Guid="*">
+          <RegistryValue Root="HKLM" Key="Software\Classes\.hy"
+                         Type="string" Value="Hython.Source" KeyPath="yes" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Source"
+                         Type="string" Value="Hython 소스 파일" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Source\DefaultIcon"
+                         Type="string" Value="[STUDIOFOLDER]HythonStudio.exe,0" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Source\shell\open\command"
+                         Type="string" Value="&quot;[STUDIOFOLDER]HythonStudio.exe&quot; &quot;%1&quot;" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\.hbc"
+                         Type="string" Value="Hython.Bytecode" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode"
+                         Type="string" Value="Hython 바이트코드" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode\DefaultIcon"
+                         Type="string" Value="[STUDIOFOLDER]HythonStudio.exe,0" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode\shell\open\command"
+                         Type="string" Value="&quot;[STUDIOFOLDER]HythonStudio.exe&quot; &quot;%1&quot;" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode\shell\build"
+                         Type="string" Value="Hython EXE로 빌드" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\Hython.Bytecode\shell\build\command"
+                         Type="string" Value="&quot;[STUDIOFOLDER]HythonStudio.exe&quot; --build-hbc &quot;%1&quot;" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\SystemFileAssociations\.py\shell\HythonConvert"
+                         Type="string" Value="완전 하이썬(.hy)으로 변환" />
+          <RegistryValue Root="HKLM" Key="Software\Classes\SystemFileAssociations\.py\shell\HythonConvert\command"
+                         Type="string" Value="&quot;[STUDIOFOLDER]HythonStudio.exe&quot; --convert-python &quot;%1&quot;" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Component Id="StudioStartMenuComponent" Guid="*">
+        <Shortcut Id="StudioStartMenu" Name="Hython Studio"
+                  Description="Hython 통합 개발 환경"
+                  Target="[STUDIOFOLDER]HythonStudio.exe"
+                  WorkingDirectory="STUDIOFOLDER" Icon="StudioIcon" />
+        <RegistryValue Root="HKLM" Key="Software\Kooyoseb\HythonStudio"
+                       Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="StudioDesktopComponent" Guid="*">
+        <Shortcut Id="StudioDesktop" Name="Hython Studio"
+                  Description="Hython 통합 개발 환경"
+                  Target="[STUDIOFOLDER]HythonStudio.exe"
+                  WorkingDirectory="STUDIOFOLDER" Icon="StudioIcon" />
+        <RegistryValue Root="HKLM" Key="Software\Kooyoseb\HythonStudio"
+                       Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <Feature Id="StudioFeature" Title="Hython Studio 1.0" Level="1"
+             AllowAbsent="no" Display="expand">
+      <ComponentRef Id="StudioExecutable" />
+      <ComponentRef Id="StudioFileAssociations" />
+      <ComponentRef Id="StudioStartMenuComponent" />
+      <Feature Id="StudioDesktopFeature" Title="Desktop shortcut"
+               Description="Create a Hython Studio shortcut on the desktop." Level="2">
+        <ComponentRef Id="StudioDesktopComponent" />
+      </Feature>
+    </Feature>
+  </Package>
+</Wix>

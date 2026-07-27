@@ -1,0 +1,469 @@
+<Window x:Class="HythonStudio.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:model="clr-namespace:HythonStudio.Models"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Hython Studio" Width="1380" Height="860"
+        MinWidth="980" MinHeight="620" WindowStartupLocation="CenterScreen"
+        WindowStyle="None" ResizeMode="CanResize"
+        PreviewKeyDown="Window_PreviewKeyDown">
+  <shell:WindowChrome.WindowChrome>
+    <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="6"
+                        CornerRadius="8" GlassFrameThickness="0" />
+  </shell:WindowChrome.WindowChrome>
+  <Window.Resources>
+    <HierarchicalDataTemplate DataType="{x:Type model:ExplorerNode}"
+                              ItemsSource="{Binding Children}">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding Icon}" Width="24" Foreground="#E05A5A"
+                   FontWeight="SemiBold" />
+        <TextBlock Text="{Binding Name}" />
+      </StackPanel>
+    </HierarchicalDataTemplate>
+  </Window.Resources>
+
+  <DockPanel>
+    <Border DockPanel.Dock="Top" Height="36" Background="#15171B"
+            MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+      <DockPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
+          <Border Width="20" Height="20" CornerRadius="5" Background="#D44C4C">
+            <TextBlock Text="ㅎ" Foreground="White" FontWeight="Bold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <TextBlock Text="Hython Studio" Margin="9,0,0,0"
+                     FontWeight="SemiBold" VerticalAlignment="Center" />
+          <Border Margin="10,0,0,0" Padding="7,2" CornerRadius="8" Background="#292C32">
+            <TextBlock Text="1.0" Foreground="#AAB0BA" FontSize="11" />
+          </Border>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+          <Button Content="—" Width="44" Height="36" Margin="0" Padding="0"
+                  Background="Transparent" BorderThickness="0" Click="Minimize_Click" />
+          <Button Content="□" Width="44" Height="36" Margin="0" Padding="0"
+                  Background="Transparent" BorderThickness="0" Click="Maximize_Click" />
+          <Button Content="×" Width="46" Height="36" Margin="0" Padding="0"
+                  Style="{StaticResource TitleCloseButton}" Click="Close_Click" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <Menu DockPanel.Dock="Top" Height="30">
+      <Menu.Resources>
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="#202329" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="#E7E9ED" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#873838" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#FFFFFF" />
+        <Style TargetType="MenuItem"
+               BasedOn="{StaticResource StudioMenuItem}" />
+        <Style TargetType="Separator"
+               BasedOn="{StaticResource DarkContextSeparator}" />
+      </Menu.Resources>
+      <MenuItem Header="_파일">
+        <MenuItem Header="프로젝트 폴더 열기" Click="OpenProject_Click" />
+        <MenuItem Header="파일 저장" InputGestureText="Ctrl+S" Click="Save_Click" />
+        <MenuItem Header="모두 저장" InputGestureText="Ctrl+Shift+S"
+                  Click="SaveAll_Click" />
+        <Separator />
+        <MenuItem Header="종료" Click="Exit_Click" />
+      </MenuItem>
+      <MenuItem Header="_실행">
+        <MenuItem Header="현재 파일 실행" Click="Run_Click" />
+        <MenuItem Header="HBC 컴파일" Click="Compile_Click" />
+        <MenuItem Header="EXE 빌드" Click="BuildExe_Click" />
+      </MenuItem>
+      <MenuItem Header="_도구">
+        <MenuItem Header="Hython 설치 및 업데이트…" Click="ManageEngine_Click" />
+        <MenuItem Header="패키지 관리자" Click="Packages_Click" />
+        <Separator />
+        <MenuItem Header="선택한 Python을 완전 하이썬으로 변환"
+                  Click="ConvertPython_Click" />
+        <MenuItem Header="선택한 HBC를 EXE로 빌드"
+                  Click="BuildSelectedHbc_Click" />
+        <MenuItem Header="HBC EXE 빌드 설정…"
+                  Click="ConfigureHbcBuild_Click" />
+        <MenuItem Header="Hython 엔진 다시 찾기" Click="RefreshEngine_Click" />
+      </MenuItem>
+      <MenuItem Header="_도움말">
+        <MenuItem Header="Hython Studio 정보" Click="About_Click" />
+      </MenuItem>
+    </Menu>
+
+    <Border DockPanel.Dock="Top" Background="#25282E" Height="48"
+            BorderBrush="#343840" BorderThickness="0,0,0,1" Padding="7,4">
+      <DockPanel>
+        <StackPanel Orientation="Horizontal">
+          <Button Content="＋ 폴더" ToolTip="프로젝트 폴더 열기" Click="OpenProject_Click" />
+          <Button Content="저장" ToolTip="Ctrl+S" Click="Save_Click" />
+          <Separator Margin="8,2" />
+          <Button Content="▶ 실행" Style="{StaticResource PrimaryButton}" Click="Run_Click" />
+          <Button Content="◆ HBC" Click="Compile_Click" />
+          <Button Content="▣ EXE" Click="BuildExe_Click" />
+          <Button Content="● 디버그" Click="Debug_Click" />
+        </StackPanel>
+        <Border DockPanel.Dock="Right" Background="#1C1F24" CornerRadius="5"
+                Margin="8,4" Padding="10,0">
+        <TextBlock x:Name="EngineStatus"
+                   VerticalAlignment="Center" Foreground="#AAB0BA"
+                   TextAlignment="Right" />
+        </Border>
+      </DockPanel>
+    </Border>
+
+    <StatusBar DockPanel.Dock="Bottom" Background="#A93434" Foreground="White">
+      <StatusBarItem>
+        <TextBlock x:Name="ProjectStatus" Text="프로젝트 없음" />
+      </StatusBarItem>
+      <Separator />
+      <StatusBarItem HorizontalAlignment="Right">
+        <TextBlock Text="Hython Studio 1.0.0 · HBC VM IDE" />
+      </StatusBarItem>
+    </StatusBar>
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="260" MinWidth="190" />
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="260" MinWidth="190" />
+      </Grid.ColumnDefinitions>
+
+      <Border Grid.Column="0" Background="#202329" BorderBrush="#343840"
+              BorderThickness="0,0,1,0">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="44" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Border Background="#191B20" BorderBrush="#343840" BorderThickness="0,0,1,0">
+            <StackPanel>
+              <Button x:Name="ExplorerActivityButton" Content="▤" FontSize="18"
+                      ToolTip="프로젝트" Background="#2C3037" BorderThickness="0"
+                      Margin="0,4" Click="ShowExplorer_Click" />
+              <Button x:Name="SearchActivityButton" Content="⌕" FontSize="18"
+                      ToolTip="프로젝트 검색" Background="Transparent" BorderThickness="0"
+                      Margin="0,4" Click="ShowSearch_Click" />
+              <Button Content="◆" FontSize="15" ToolTip="HBC"
+                      Background="Transparent" BorderThickness="0" Margin="0,4"
+                      Click="ConfigureHbcBuild_Click" />
+              <Button Content="▦" FontSize="16" ToolTip="패키지"
+                      Background="Transparent" BorderThickness="0" Margin="0,4"
+                      Click="Packages_Click" />
+            </StackPanel>
+          </Border>
+          <DockPanel x:Name="ExplorerPanel" Grid.Column="1">
+            <Grid DockPanel.Dock="Top" Margin="11,9,8,6">
+              <TextBlock Text="프로젝트" FontWeight="SemiBold" Foreground="#CDD1D8" />
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="＋" ToolTip="새 Hython 파일" Width="25" Height="22"
+                        Margin="0" Padding="0" Background="Transparent"
+                        BorderThickness="0" Click="NewFile_Click" />
+                <Button Content="▣" ToolTip="새 폴더" Width="25" Height="22"
+                        Margin="0" Padding="0" Background="Transparent"
+                        BorderThickness="0" Click="NewFolder_Click" />
+                <Button Content="↻" ToolTip="새로고침" Width="25" Height="22"
+                        Margin="0" Padding="0" Background="Transparent"
+                        BorderThickness="0" Click="RefreshProject_Click" />
+              </StackPanel>
+            </Grid>
+            <TreeView x:Name="ProjectTree" Background="#202329" Foreground="#DEE1E6"
+                      BorderThickness="0" Padding="7"
+                      MouseDoubleClick="ProjectTree_DoubleClick">
+              <TreeView.ContextMenu>
+                <ContextMenu Style="{StaticResource DarkContextMenu}">
+                  <ContextMenu.Resources>
+                    <Style TargetType="MenuItem"
+                           BasedOn="{StaticResource DarkContextMenuItem}" />
+                    <Style TargetType="Separator"
+                           BasedOn="{StaticResource DarkContextSeparator}" />
+                  </ContextMenu.Resources>
+                  <MenuItem Header="열기" Click="OpenSelectedFile_Click" />
+                  <Separator />
+                  <MenuItem Header="Python  →  완전 하이썬 (.hy)"
+                            Click="ConvertPython_Click" />
+                  <MenuItem Header="HBC  →  독립 EXE"
+                            Click="BuildSelectedHbc_Click" />
+                  <MenuItem Header="HBC EXE 빌드 설정…"
+                            Click="ConfigureHbcBuild_Click" />
+                  <Separator />
+                  <MenuItem Header="새 Hython 파일" Click="NewFile_Click" />
+                  <MenuItem Header="새 폴더" Click="NewFolder_Click" />
+                  <MenuItem Header="이름 바꾸기" Click="RenameSelected_Click" />
+                  <MenuItem Header="삭제" Click="DeleteSelected_Click" />
+                  <MenuItem Header="새로고침" Click="RefreshProject_Click" />
+                </ContextMenu>
+              </TreeView.ContextMenu>
+            </TreeView>
+          </DockPanel>
+          <DockPanel x:Name="SearchPanel" Grid.Column="1" Visibility="Collapsed">
+            <StackPanel DockPanel.Dock="Top" Margin="11,9,8,8">
+              <TextBlock Text="프로젝트 검색" FontWeight="SemiBold"
+                         Foreground="#CDD1D8" Margin="0,0,0,8" />
+              <DockPanel>
+                <Button DockPanel.Dock="Right" Content="검색" Padding="8,5"
+                        Margin="5,0,0,0" Click="SearchProject_Click" />
+                <TextBox x:Name="SearchInput" Padding="7,6"
+                         Background="#15171B" Foreground="#F0F1F3"
+                         BorderBrush="#454A54" KeyDown="SearchInput_KeyDown" />
+              </DockPanel>
+              <CheckBox x:Name="SearchMatchCase" Content="대/소문자 구분"
+                        Foreground="#AAB0BA" Margin="2,7,0,0" />
+              <TextBlock x:Name="SearchStatus" Text="검색어를 입력하세요."
+                         Foreground="#8F96A1" Margin="2,7,0,0" />
+            </StackPanel>
+            <ListBox x:Name="SearchResultsList" Background="#202329"
+                     Foreground="#DDE0E5" BorderThickness="0"
+                     MouseDoubleClick="SearchResults_DoubleClick">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Margin="5,4" ToolTip="{Binding File}">
+                    <TextBlock Text="{Binding Location}" Foreground="#E05A5A"
+                               FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Preview}" Foreground="#B8BDC6"
+                               TextTrimming="CharacterEllipsis" />
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </DockPanel>
+        </Grid>
+      </Border>
+      <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"
+                    Background="#343840" />
+
+      <Grid Grid.Column="2">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="5" />
+          <RowDefinition Height="210" MinHeight="120" />
+        </Grid.RowDefinitions>
+        <TabControl x:Name="EditorTabs" SelectionChanged="EditorTabs_SelectionChanged">
+          <TabItem Header="시작">
+            <Grid Background="#17191E">
+              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Border Width="66" Height="66" CornerRadius="18" Background="#A93434"
+                        HorizontalAlignment="Center" Margin="0,0,0,18">
+                  <TextBlock Text="ㅎ" FontSize="38" FontWeight="Bold" Foreground="White"
+                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <TextBlock Text="Hython Studio" FontSize="34" FontWeight="SemiBold"
+                           Foreground="#E05454" HorizontalAlignment="Center" />
+                <TextBlock Text="한글 프로그래밍을 위한 독립 개발 환경"
+                           Foreground="#AAB0BA" FontSize="15" Margin="0,8,0,22" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                  <Button Content="프로젝트 열기" Width="145"
+                        Click="OpenProject_Click" />
+                  <Button Content="새 프로젝트" Width="145" Click="NewProject_Click" />
+                </StackPanel>
+                <StackPanel Margin="0,24,0,0" Width="420">
+                  <TextBlock Text="최근 프로젝트" Foreground="#AAB0BA"
+                             FontWeight="SemiBold" Margin="3,0,0,7" />
+                  <ListBox x:Name="RecentProjectsList" MaxHeight="125"
+                           Background="#1D2025" Foreground="#DDE0E5"
+                           BorderBrush="#343840" BorderThickness="1"
+                           MouseDoubleClick="RecentProjects_DoubleClick" />
+                </StackPanel>
+                <Border Margin="0,24,0,0" Padding="16,10" CornerRadius="7"
+                        Background="#202329" BorderBrush="#343840" BorderThickness="1">
+                  <TextBlock Text="Ctrl+Space 자동완성  ·  Ctrl+S 저장  ·  F5 실행"
+                             Foreground="#8F96A1" />
+                </Border>
+              </StackPanel>
+            </Grid>
+          </TabItem>
+        </TabControl>
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"
+                      Background="#343840" />
+        <TabControl x:Name="BottomTabs" Grid.Row="2">
+          <TabItem Header="문제  0">
+            <ListBox x:Name="ProblemsList" Background="#181A1F"
+                     Foreground="#E7E9ED" BorderThickness="0"
+                     MouseDoubleClick="ProblemsList_DoubleClick" />
+          </TabItem>
+          <TabItem Header="출력">
+            <TextBox x:Name="OutputBox" Background="#14161A" Foreground="#D9DCE2"
+                     BorderThickness="0" FontFamily="Cascadia Mono,Consolas"
+                     IsReadOnly="True" TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto" Padding="10" />
+          </TabItem>
+          <TabItem x:Name="DebugTab" Header="디버그">
+            <Grid Background="#181A1F">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <DockPanel Background="#202329" LastChildFill="False">
+                <Button Content="● 중단점" ToolTip="현재 줄 중단점 설정/해제"
+                        Click="ToggleBreakpoint_Click" />
+                <Button x:Name="DebugStartButton" Content="▶ 시작"
+                        Style="{StaticResource PrimaryButton}" Click="DebugStart_Click" />
+                <Button x:Name="DebugContinueButton" Content="▷ 계속"
+                        IsEnabled="False" Click="DebugContinue_Click" />
+                <Button x:Name="DebugStepButton" Content="↷ 한 단계"
+                        IsEnabled="False" Click="DebugStep_Click" />
+                <Button x:Name="DebugStopButton" Content="■ 중지"
+                        IsEnabled="False" Click="DebugStop_Click" />
+                <TextBlock x:Name="DebugStatus" Text="디버그 대기 중"
+                           Foreground="#AAB0BA" VerticalAlignment="Center"
+                           Margin="12,0,0,0" />
+              </DockPanel>
+              <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="210" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="1.2*" />
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="#343840" BorderThickness="0,0,1,0" Padding="9">
+                  <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="중단점" FontWeight="SemiBold"
+                               Margin="0,0,0,7" />
+                    <ListBox x:Name="BreakpointsList" Background="#15171B"
+                             Foreground="#E05A5A" BorderThickness="0" />
+                  </DockPanel>
+                </Border>
+                <Border Grid.Column="1" BorderBrush="#343840"
+                        BorderThickness="0,0,1,0" Padding="9">
+                  <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="변수" FontWeight="SemiBold"
+                               Margin="0,0,0,7" />
+                    <DataGrid x:Name="DebugVariables" AutoGenerateColumns="False"
+                              IsReadOnly="True" HeadersVisibility="Column"
+                              Background="#15171B" Foreground="#E7E9ED"
+                              BorderThickness="0" GridLinesVisibility="None">
+                      <DataGrid.Columns>
+                        <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="*" />
+                        <DataGridTextColumn Header="형식" Binding="{Binding Type}" Width="90" />
+                        <DataGridTextColumn Header="값" Binding="{Binding Value}" Width="2*" />
+                      </DataGrid.Columns>
+                    </DataGrid>
+                  </DockPanel>
+                </Border>
+                <TextBox x:Name="DebugOutput" Grid.Column="2" IsReadOnly="True"
+                         Background="#111317" Foreground="#D7DAE0"
+                         BorderThickness="0" Padding="10"
+                         FontFamily="Cascadia Mono,Consolas" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" />
+              </Grid>
+            </Grid>
+          </TabItem>
+          <TabItem Header="터미널">
+            <Grid Background="#111317">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <DockPanel Background="#1A1D22" LastChildFill="False">
+                <TextBlock Text="PowerShell" VerticalAlignment="Center"
+                           Foreground="#AAB0BA" Margin="6,0,12,0" />
+                <Button Content="지우기" Padding="8,3" Click="ClearTerminal_Click" />
+                <Button Content="중단" Padding="8,3" Click="StopTerminal_Click" />
+              </DockPanel>
+              <TextBox x:Name="TerminalOutput" Grid.Row="1"
+                       Background="#111317" Foreground="#D7DAE0"
+                       BorderThickness="0" IsReadOnly="True"
+                       FontFamily="Cascadia Mono,Consolas" FontSize="13"
+                       Padding="10" TextWrapping="Wrap"
+                       VerticalScrollBarVisibility="Auto" />
+              <DockPanel Grid.Row="2" Background="#17191E" Margin="0,1,0,0">
+                <TextBlock x:Name="TerminalPrompt" Text="❯" Foreground="#E05A5A"
+                           FontSize="16" FontWeight="Bold"
+                           VerticalAlignment="Center" Margin="10,0,7,0" />
+                <TextBox x:Name="TerminalInput" Background="#17191E"
+                         Foreground="#F0F1F3" BorderThickness="0" Padding="4,8"
+                         FontFamily="Cascadia Mono,Consolas" FontSize="13"
+                         KeyDown="TerminalInput_KeyDown" />
+              </DockPanel>
+            </Grid>
+          </TabItem>
+          <TabItem x:Name="PackagesTab" Header="패키지">
+            <Grid Background="#181A1F" Margin="12">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="360" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Border Background="#202329" BorderBrush="#343840"
+                      BorderThickness="1" CornerRadius="6" Padding="14">
+                <StackPanel>
+                  <TextBlock Text="Hython 패키지 관리자" FontSize="16"
+                             FontWeight="SemiBold" />
+                  <TextBlock Text="설치와 동시에 라이브러리 API를 분석해&#x0a;한글 발음 사전과 자동완성을 생성합니다."
+                             Foreground="#9AA0AA" Margin="0,5,0,12" />
+                  <TextBlock Text="PyPI 패키지 이름 또는 지정자" Foreground="#C7CBD2" />
+                  <TextBox x:Name="PackageSpecInput" Margin="0,5,0,10"
+                           Padding="8,6" Background="#14161A" Foreground="#F0F1F3"
+                           BorderBrush="#434852" ToolTip="예: requests 또는 requests&gt;=2.32" />
+                  <TextBlock Text="불러오기 모듈 이름 (선택)" Foreground="#C7CBD2" />
+                  <TextBox x:Name="PackageModuleInput" Margin="0,5,0,10"
+                           Padding="8,6" Background="#14161A" Foreground="#F0F1F3"
+                           BorderBrush="#434852" ToolTip="패키지명과 import 이름이 다를 때만 입력" />
+                  <WrapPanel Margin="0,2,0,5">
+                    <Button x:Name="PackageInstallButton" Content="설치"
+                            Style="{StaticResource PrimaryButton}"
+                            Click="PackageInstall_Click" />
+                    <Button x:Name="PackageUpdateButton" Content="업데이트"
+                            Click="PackageUpdate_Click" />
+                    <Button x:Name="PackageRemoveButton" Content="제거"
+                            Click="PackageRemove_Click" />
+                    <Button x:Name="PackageScanButton" Content="API 분석"
+                            Click="PackageScan_Click" />
+                  </WrapPanel>
+                  <CheckBox x:Name="PackageStaticScan" Content="안전한 정적 분석만 사용"
+                            Foreground="#C7CBD2" Margin="3,7,0,5"
+                            ToolTip="모듈을 실행하지 않고 Python 소스만 분석합니다." />
+                  <ProgressBar x:Name="PackageProgress" Height="3" Margin="0,10,0,0"
+                               IsIndeterminate="True" Visibility="Collapsed"
+                               Foreground="#D44C4C" Background="#2B2F36" />
+                  <TextBlock x:Name="PackageStatus" Text="작업 대기 중"
+                             Foreground="#9AA0AA" Margin="0,9,0,0" />
+                </StackPanel>
+              </Border>
+              <Grid Grid.Column="1" Margin="12,0,0,0">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <DockPanel Margin="0,0,0,7">
+                  <TextBlock Text="작업 기록" FontWeight="SemiBold"
+                             VerticalAlignment="Center" />
+                  <Button DockPanel.Dock="Right" Content="기록 지우기"
+                          Padding="8,3" Click="ClearPackageLog_Click" />
+                </DockPanel>
+                <TextBox x:Name="PackageLog" Grid.Row="1"
+                         Background="#111317" Foreground="#D7DAE0"
+                         BorderBrush="#343840" BorderThickness="1"
+                         FontFamily="Cascadia Mono,Consolas" FontSize="13"
+                         IsReadOnly="True" Padding="10" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" />
+              </Grid>
+            </Grid>
+          </TabItem>
+        </TabControl>
+      </Grid>
+
+      <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch"
+                    Background="#343840" />
+      <Border Grid.Column="4" Background="#202329" BorderBrush="#343840"
+              BorderThickness="1,0,0,0">
+        <DockPanel>
+          <Border DockPanel.Dock="Top" Background="#1C1F24"
+                  BorderBrush="#343840" BorderThickness="0,0,0,1"
+                  Padding="12,10">
+            <TextBlock Text="코드 구조" FontWeight="SemiBold" Foreground="#CDD1D8" />
+          </Border>
+          <StackPanel Margin="12">
+            <TextBlock Text="현재 파일" Foreground="#8F96A1" />
+            <TextBlock x:Name="CurrentFileText" Text="선택되지 않음"
+                       Margin="0,5,0,18" TextWrapping="Wrap" />
+            <TextBlock Text="Hython 엔진이 분석한 함수, 클래스와&#x0a;HBC 메타데이터를 표시합니다."
+                       Foreground="#8F96A1" TextWrapping="Wrap" />
+            <ListBox x:Name="SymbolsList" Margin="0,14,0,0"
+                     Background="#202329" Foreground="#DDE0E5"
+                     BorderThickness="0" />
+          </StackPanel>
+        </DockPanel>
+      </Border>
+    </Grid>
+  </DockPanel>
+</Window>

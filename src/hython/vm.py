@@ -1240,7 +1240,7 @@ class HythonAsyncGenerator:
 
 class VM:
     def __init__(self, module_paths: list[Path] | None = None, modules: dict | None = None,
-                 module_files: dict | None = None):
+                 module_files: dict | None = None, instruction_hook=None):
         self.globals = {name:value for name,value in vars(builtins).items() if not name.startswith("_")}
         self.globals["asyncio_run"]=asyncio.run
         self.globals["__name__"]="__main__"
@@ -1248,6 +1248,7 @@ class VM:
         self.modules = modules if modules is not None else {}
         self.module_files = module_files if module_files is not None else {}
         self._last_instruction = {}
+        self.instruction_hook = instruction_hook
 
     @staticmethod
     def save_name(scope,name):
@@ -2070,6 +2071,8 @@ class VM:
         binary.update({"IADD":operator.iadd,"ISUB":operator.isub,"IMUL":operator.imul,"IDIV":operator.itruediv,"IFLOORDIV":operator.ifloordiv,"IMOD":operator.imod,"IPOW":operator.ipow,"IBIT_OR":operator.ior,"IBIT_XOR":operator.ixor,"IBIT_AND":operator.iand,"ILSHIFT":operator.ilshift,"IRSHIFT":operator.irshift,"IMATMUL":operator.imatmul})
         while ip < len(instructions):
             self._last_instruction[id(code)]=ip
+            if self.instruction_hook is not None:
+                self.instruction_hook(code,ip,local,stack)
             ins=instructions[ip]; op=ins[0]; arg=ins[1] if len(ins)>1 else None; ip+=1
             if op=="CONST": stack.append(code.constants[arg])
             elif op=="LOAD":
