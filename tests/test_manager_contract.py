@@ -18,7 +18,7 @@ class ManagerContractTests(unittest.TestCase):
         self.assertIn("NotifyIcon", app)
         self.assertIn("Global\\Kooyoseb.Hython.Manager", app)
         self.assertIn("PublishSingleFile=true", build)
-        self.assertIn("<Version>1.1.1</Version>", project)
+        self.assertIn("<Version>1.1.2</Version>", project)
 
     def test_catalog_recognizes_products_without_mixing_release_tags(self):
         source = self.text(
@@ -100,10 +100,10 @@ class ManagerContractTests(unittest.TestCase):
             "MajorUpgrade",
             "ManagerStartMenu",
             "ManagerDesktopFeature",
-            'Title="Hython Manager 1.1.1"',
+            'Title="Hython Manager 1.1.2"',
         ):
             self.assertIn(marker, wix)
-        self.assertIn('VERSION = "1.1.1"', builder)
+        self.assertIn('VERSION = "1.1.2"', builder)
         self.assertIn("HythonManager-{VERSION}-x64.msi", builder)
         self.assertIn("removeOnUninstall", wix)
 
@@ -168,6 +168,33 @@ class ManagerContractTests(unittest.TestCase):
         self.assertIn("ThemeRadio_Checked", xaml)
         self.assertIn("화이트 모드 · 파란색", xaml)
         self.assertIn("DynamicResource Accent", app)
+
+    def test_manager_self_update_uses_verified_independent_helper(self):
+        app = self.text("manager/HythonManager/App.xaml.cs")
+        catalog = self.text(
+            "manager/HythonManager/Services/ProductCatalogService.cs"
+        )
+        queue = self.text(
+            "manager/HythonManager/Services/OperationQueueService.cs"
+        )
+        for marker in (
+            "--apply-update", "RunUpdateHelperAndExitAsync",
+            "RunManagerUpdateHelperAsync",
+        ):
+            self.assertIn(marker, app + catalog)
+        for marker in (
+            "File.Copy(currentExecutable, helperPath",
+            "WaitForExitAsync(timeout.Token)",
+            "firstLength != secondLength",
+            "/qn /norestart",
+        ):
+            self.assertIn(marker, catalog)
+        self.assertNotIn("timeout /t 2", catalog)
+        self.assertLess(
+            queue.index("다운로드 검증 완료"),
+            queue.index("StartManagerUpgrade(path)"),
+        )
+        self.assertIn("Manager는 종료되지 않습니다.", queue)
 
 
 if __name__ == "__main__":

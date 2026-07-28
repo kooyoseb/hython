@@ -273,7 +273,7 @@
         <Grid Margin="20,0">
           <TextBlock x:Name="StatusText" Text="준비됨" VerticalAlignment="Center"
                      Foreground="{DynamicResource Muted}" />
-          <TextBlock Text="Hython Manager 1.1.1 · 트레이 실행 중"
+          <TextBlock Text="Hython Manager 1.1.2 · 트레이 실행 중"
                      HorizontalAlignment="Right" VerticalAlignment="Center"
                      Foreground="{DynamicResource Subtle}" />
         </Grid>

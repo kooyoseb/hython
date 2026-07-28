@@ -18,7 +18,7 @@ public sealed class ProductCatalogService
 
     public ProductCatalogService()
     {
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("Hython-Manager/1.1.1");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("Hython-Manager/1.1.2");
         client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
     }
 
@@ -317,22 +317,82 @@ public sealed class ProductCatalogService
         return process.ExitCode;
     }
 
-    public static void StartManagerUpgrade(string msiPath)
+    public static bool StartManagerUpgrade(string msiPath)
     {
         if (!File.Exists(msiPath))
             throw new FileNotFoundException("Manager 업데이트 MSI를 찾을 수 없습니다.", msiPath);
-        string command =
-            $"timeout /t 2 /nobreak >nul & msiexec.exe /i \"{msiPath}\" /qn /norestart";
-        var start = new ProcessStartInfo("cmd.exe")
+        string? currentExecutable = Environment.ProcessPath;
+        if (string.IsNullOrWhiteSpace(currentExecutable) ||
+            !File.Exists(currentExecutable))
+            throw new FileNotFoundException(
+                "실행 중인 Manager 파일을 찾을 수 없습니다.", currentExecutable);
+        string helperDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Hython", "Manager", "Updater");
+        Directory.CreateDirectory(helperDirectory);
+        string helperPath = Path.Combine(helperDirectory,
+            $"HythonManagerUpdateHelper-{Guid.NewGuid():N}.exe");
+        File.Copy(currentExecutable, helperPath, true);
+        var start = new ProcessStartInfo(helperPath)
         {
             UseShellExecute = false,
             CreateNoWindow = true
         };
-        start.ArgumentList.Add("/d");
-        start.ArgumentList.Add("/s");
-        start.ArgumentList.Add("/c");
-        start.ArgumentList.Add(command);
-        Process.Start(start);
+        start.ArgumentList.Add("--apply-update");
+        start.ArgumentList.Add(msiPath);
+        start.ArgumentList.Add(Environment.ProcessId.ToString());
+        start.ArgumentList.Add(currentExecutable);
+        Process? helper = Process.Start(start);
+        return helper is not null && !helper.HasExited;
+    }
+
+    public static async Task<int> RunManagerUpdateHelperAsync(string[] args)
+    {
+        if (args.Length < 4 || !File.Exists(args[1]) ||
+            !int.TryParse(args[2], out int parentPid))
+            return 2;
+        string msiPath = Path.GetFullPath(args[1]);
+        string installedExecutable = Path.GetFullPath(args[3]);
+        try
+        {
+            try
+            {
+                using Process parent = Process.GetProcessById(parentPid);
+                using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
+                await parent.WaitForExitAsync(timeout.Token);
+            }
+            catch (ArgumentException) { }
+
+            long firstLength = new FileInfo(msiPath).Length;
+            await Task.Delay(1200);
+            long secondLength = new FileInfo(msiPath).Length;
+            if (firstLength <= 0 || firstLength != secondLength)
+                throw new IOException(
+                    "업데이트 MSI 다운로드가 아직 완료되지 않았습니다.");
+
+            var install = new ProcessStartInfo("msiexec.exe",
+                $"/i \"{msiPath}\" /qn /norestart")
+            {
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+            using Process process = Process.Start(install)
+                ?? throw new InvalidOperationException(
+                    "Windows Installer를 시작할 수 없습니다.");
+            await process.WaitForExitAsync();
+            int result = process.ExitCode;
+            if (result is not (0 or 3010 or 1641)) return result;
+            if (File.Exists(installedExecutable))
+                Process.Start(new ProcessStartInfo(installedExecutable)
+                    { UseShellExecute = true });
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            await OperationHistory.WriteAsync("Hython Manager", "자기 업데이트",
+                "실패", "독립 업데이트 헬퍼에서 설치하지 못했습니다.", ex);
+            return 1;
+        }
     }
 
     public static async Task<bool> TryRepairAsync(ProductInfo product)

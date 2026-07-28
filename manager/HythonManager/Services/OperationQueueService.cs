@@ -83,9 +83,17 @@ public sealed class OperationQueueService
                 item.Progress = 78;
                 if (product.Id == "manager")
                 {
-                    ProductCatalogService.StartManagerUpgrade(path);
+                    item.Progress = 100;
+                    item.Detail = "다운로드 검증 완료 · 업데이트 헬퍼로 인계 중";
+                    UpdateOverall();
+                    await Task.Delay(250);
+                    if (!ProductCatalogService.StartManagerUpgrade(path))
+                        throw new InvalidOperationException(
+                            "독립 업데이트 헬퍼를 시작하지 못했습니다. Manager는 종료되지 않습니다.");
                     item.Progress = 100;
                     item.State = OperationState.Completed;
+                    await OperationHistory.WriteAsync(product.Name, "자기 업데이트",
+                        "인계 완료", "다운로드 검증 후 독립 업데이트 헬퍼가 시작되었습니다.");
                     App.ExitForUpgrade();
                     return;
                 }

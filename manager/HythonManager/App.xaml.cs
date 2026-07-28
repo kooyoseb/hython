@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 using HythonManager.Services;
@@ -38,6 +39,13 @@ public partial class App : System.Windows.Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        if (e.Args.Length > 0 &&
+            e.Args[0].Equals("--apply-update", StringComparison.OrdinalIgnoreCase))
+        {
+            base.OnStartup(e);
+            _ = RunUpdateHelperAndExitAsync(e.Args);
+            return;
+        }
         mutex = new Mutex(true, @"Global\Kooyoseb.Hython.Manager", out bool created);
         if (!created)
         {
@@ -54,6 +62,12 @@ public partial class App : System.Windows.Application
         ConfigureTimer();
         if (!e.Args.Contains("--tray", StringComparer.OrdinalIgnoreCase))
             window.Show();
+    }
+
+    private async Task RunUpdateHelperAndExitAsync(string[] args)
+    {
+        int result = await ProductCatalogService.RunManagerUpdateHelperAsync(args);
+        Shutdown(result);
     }
 
     private void CreateTray()
